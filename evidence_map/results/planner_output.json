@@ -1,0 +1,383 @@
+{
+ "question": {
+  "question_id": "robotics_proprio_001",
+  "question": "Why do reported effects of proprioceptive-state input on manipulation policy success conflict in sign (state-free 0->85% vs. state +3 to +30 pp)?",
+  "domain": "robot_learning",
+  "metadata": {}
+ },
+ "hypothesis_evidence": {
+  "H1_shift": {
+   "n_support": 20,
+   "n_contradict": 7,
+   "support_conf": 10.4,
+   "contradict_conf": 3.2,
+   "n_provenance_roots": 24,
+   "support_papers": [
+    "2409.20537",
+    "2506.23944",
+    "2509.18644",
+    "2601.16667",
+    "2602.06575",
+    "2602.12032",
+    "2605.13067",
+    "2607.07101",
+    "2608.03052"
+   ],
+   "contradict_papers": [
+    "2506.23944",
+    "2602.06575",
+    "2602.12032",
+    "2605.13067",
+    "2607.07101"
+   ]
+  },
+  "H2_frame": {
+   "n_support": 12,
+   "n_contradict": 15,
+   "support_conf": 5.8,
+   "contradict_conf": 7.8,
+   "n_provenance_roots": 24,
+   "support_papers": [
+    "2506.23944",
+    "2509.18644",
+    "2601.16667",
+    "2602.06575",
+    "2602.12032",
+    "2605.13067",
+    "2607.07101"
+   ],
+   "contradict_papers": [
+    "2409.20537",
+    "2506.23944",
+    "2509.18644",
+    "2601.16667",
+    "2602.06575",
+    "2602.12032",
+    "2607.07101",
+    "2608.03052"
+   ]
+  },
+  "H3_fusion": {
+   "n_support": 13,
+   "n_contradict": 14,
+   "support_conf": 6.4,
+   "contradict_conf": 7.2,
+   "n_provenance_roots": 24,
+   "support_papers": [
+    "2506.23944",
+    "2509.18644",
+    "2601.16667",
+    "2602.06575",
+    "2602.12032",
+    "2605.13067",
+    "2607.07101"
+   ],
+   "contradict_papers": [
+    "2409.20537",
+    "2506.23944",
+    "2509.18644",
+    "2601.16667",
+    "2602.06575",
+    "2605.13067",
+    "2607.07101",
+    "2608.03052"
+   ]
+  },
+  "H4_observability": {
+   "n_support": 16,
+   "n_contradict": 11,
+   "support_conf": 7.8,
+   "contradict_conf": 5.8,
+   "n_provenance_roots": 24,
+   "support_papers": [
+    "2409.20537",
+    "2506.23944",
+    "2509.18644",
+    "2601.16667",
+    "2602.06575",
+    "2602.12032",
+    "2605.13067",
+    "2607.07101",
+    "2608.03052"
+   ],
+   "contradict_papers": [
+    "2506.23944",
+    "2509.18644",
+    "2601.16667",
+    "2602.12032",
+    "2605.13067",
+    "2607.07101",
+    "2608.03052"
+   ]
+  },
+  "H5_heterogeneous": {
+   "n_support": 6,
+   "n_contradict": 21,
+   "support_conf": 3.4,
+   "contradict_conf": 10.2,
+   "n_provenance_roots": 24,
+   "support_papers": [
+    "2506.23944",
+    "2509.18644",
+    "2602.06575",
+    "2607.07101",
+    "2608.03052"
+   ],
+   "contradict_papers": [
+    "2409.20537",
+    "2506.23944",
+    "2509.18644",
+    "2601.16667",
+    "2602.06575",
+    "2602.12032",
+    "2605.13067",
+    "2607.07101",
+    "2608.03052"
+   ]
+  }
+ },
+ "gaps": [],
+ "posterior": {
+  "H1_shift": 0.9717,
+  "H2_frame": 0.0018,
+  "H3_fusion": 0.0106,
+  "H4_observability": 0.0158,
+  "H5_heterogeneous": 0.0001
+ },
+ "scorecard": {
+  "H1_shift": {
+   "correct": 20,
+   "decided": 27
+  },
+  "H2_frame": {
+   "correct": 12,
+   "decided": 27
+  },
+  "H3_fusion": {
+   "correct": 13,
+   "decided": 27
+  },
+  "H4_observability": {
+   "correct": 16,
+   "decided": 27
+  },
+  "H5_heterogeneous": {
+   "correct": 6,
+   "decided": 27
+  }
+ },
+ "leave_one_paper_out": {
+  "2409.20537": {
+   "winner": "H1_shift",
+   "p_H1": 0.9722
+  },
+  "2506.23944": {
+   "winner": "H1_shift",
+   "p_H1": 0.8902
+  },
+  "2509.18644": {
+   "winner": "H1_shift",
+   "p_H1": 0.9473
+  },
+  "2601.16667": {
+   "winner": "H1_shift",
+   "p_H1": 0.9346
+  },
+  "2602.06575": {
+   "winner": "H1_shift",
+   "p_H1": 0.9595
+  },
+  "2602.12032": {
+   "winner": "H1_shift",
+   "p_H1": 0.9064
+  },
+  "2605.13067": {
+   "winner": "H1_shift",
+   "p_H1": 0.9717
+  },
+  "2607.07101": {
+   "winner": "H1_shift",
+   "p_H1": 0.9631
+  },
+  "2608.03052": {
+   "winner": "H1_shift",
+   "p_H1": 0.8777
+  }
+ },
+ "cell_experiments": [
+  {
+   "cell": "shifted / relative / regularized / no-wrist",
+   "eig_bits": 0.0437,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "shifted / grounded / regularized / no-wrist",
+   "eig_bits": 0.0437,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "shifted / absolute / regularized / no-wrist",
+   "eig_bits": 0.041,
+   "existing_papers": [
+    "2602.12032"
+   ],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "shifted / relative / naive / no-wrist",
+   "eig_bits": 0.0278,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "shifted / grounded / naive / no-wrist",
+   "eig_bits": 0.0278,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "shifted / relative / regularized / wrist",
+   "eig_bits": 0.0268,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "shifted / grounded / regularized / wrist",
+   "eig_bits": 0.0268,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "shifted / absolute / naive / no-wrist",
+   "eig_bits": 0.025,
+   "existing_papers": [
+    "2602.12032"
+   ],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "shifted / absolute / regularized / wrist",
+   "eig_bits": 0.024,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "ID / absolute / naive / no-wrist",
+   "eig_bits": 0.0165,
+   "existing_papers": [
+    "2409.20537",
+    "2602.12032",
+    "2607.07101"
+   ],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
+  },
+  {
+   "cell": "ID / relative / naive / no-wrist",
+   "eig_bits": 0.0158,
+   "existing_papers": [],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
+  },
+  {
+   "cell": "ID / grounded / naive / no-wrist",
+   "eig_bits": 0.0158,
+   "existing_papers": [],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
+  },
+  {
+   "cell": "ID / absolute / regularized / no-wrist",
+   "eig_bits": 0.0125,
+   "existing_papers": [
+    "2602.12032"
+   ],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
+  },
+  {
+   "cell": "ID / relative / regularized / no-wrist",
+   "eig_bits": 0.0117,
+   "existing_papers": [],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
+  },
+  {
+   "cell": "ID / grounded / regularized / no-wrist",
+   "eig_bits": 0.0117,
+   "existing_papers": [
+    "2607.07101"
+   ],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
+  },
+  {
+   "cell": "ID / absolute / naive / wrist",
+   "eig_bits": 0.0108,
+   "existing_papers": [
+    "2506.23944",
+    "2509.18644",
+    "2601.16667",
+    "2602.06575",
+    "2605.13067",
+    "2608.03052"
+   ],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
+  },
+  {
+   "cell": "shifted / grounded / naive / wrist",
+   "eig_bits": 0.0103,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "shifted / relative / naive / wrist",
+   "eig_bits": 0.0103,
+   "existing_papers": [
+    "2605.13067"
+   ],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "ID / grounded / naive / wrist",
+   "eig_bits": 0.0102,
+   "existing_papers": [],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
+  },
+  {
+   "cell": "ID / relative / naive / wrist",
+   "eig_bits": 0.0102,
+   "existing_papers": [
+    "2605.13067"
+   ],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
+  },
+  {
+   "cell": "shifted / absolute / naive / wrist",
+   "eig_bits": 0.0074,
+   "existing_papers": [
+    "2509.18644",
+    "2601.16667",
+    "2605.13067"
+   ],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "ID / absolute / regularized / wrist",
+   "eig_bits": 0.0071,
+   "existing_papers": [
+    "2506.23944"
+   ],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
+  },
+  {
+   "cell": "ID / relative / regularized / wrist",
+   "eig_bits": 0.0065,
+   "existing_papers": [],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
+  },
+  {
+   "cell": "ID / grounded / regularized / wrist",
+   "eig_bits": 0.0065,
+   "existing_papers": [],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
+  }
+ ],
+ "recommendations": []
+}

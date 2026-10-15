@@ -1,0 +1,1791 @@
+{
+  "nodes": [
+    {
+      "node_id": "H1_shift",
+      "node_type": "hypothesis",
+      "label": "Sign is set by evaluation shift: state hurts out of the training range, is neutral-to-helpful in distribution.",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "H2_frame",
+      "node_type": "hypothesis",
+      "label": "The harm comes from absolute frames (and velocity terms); relative or grounded state helps under any evaluation.",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "H3_fusion",
+      "node_type": "hypothesis",
+      "label": "Naive fusion lets state dominate optimisation and suppress vision; with regularised/grounded fusion state helps.",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "H4_observability",
+      "node_type": "hypothesis",
+      "label": "State helps when cameras miss task-relevant information (single fixed view, bimanual relations); redundant with full wrist views.",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "H5_heterogeneous",
+      "node_type": "hypothesis",
+      "label": "No general factor: effects are task- and setup-specific noise.",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "paper_2509.18644",
+      "node_type": "paper",
+      "label": "2509.18644",
+      "timestamp": "2025",
+      "metadata": {}
+    },
+    {
+      "node_id": "root_model_pi0",
+      "node_type": "dataset",
+      "label": "root_model_pi0",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "root_data_2509.18644_real_setup",
+      "node_type": "dataset",
+      "label": "root_data_2509.18644_real_setup",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2509.18644_ID_naive_absolute_null",
+      "node_type": "claim",
+      "label": "2509.18644: null (+0.0 pp, n=1), ID, naive, absolute",
+      "timestamp": "2025",
+      "metadata": {}
+    },
+    {
+      "node_id": "root_model_act",
+      "node_type": "dataset",
+      "label": "root_model_act",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "root_model_diffusionpolicy",
+      "node_type": "dataset",
+      "label": "root_model_diffusionpolicy",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2509.18644_shift_naive_absolute_hurt",
+      "node_type": "claim",
+      "label": "2509.18644: hurt (-66.9 pp, n=9), shifted, naive, absolute",
+      "timestamp": "2025",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2509.18644_ID_naive_absolute_help",
+      "node_type": "claim",
+      "label": "2509.18644: help (+3.3 pp, n=1), ID, naive, absolute",
+      "timestamp": "2025",
+      "metadata": {}
+    },
+    {
+      "node_id": "paper_2608.03052",
+      "node_type": "paper",
+      "label": "2608.03052",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "root_model_pi0.5",
+      "node_type": "dataset",
+      "label": "root_model_pi0.5",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "root_data_robocasa365",
+      "node_type": "dataset",
+      "label": "root_data_robocasa365",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2608.03052_ID_naive_absolute_help",
+      "node_type": "claim",
+      "label": "2608.03052: help (+6.6 pp, n=3), ID, naive, absolute",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2608.03052_ID_naive_absolute_null",
+      "node_type": "claim",
+      "label": "2608.03052: null (+1.8 pp, n=5), ID, naive, absolute",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "paper_2602.12032",
+      "node_type": "paper",
+      "label": "2602.12032",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "root_model_resnet18",
+      "node_type": "dataset",
+      "label": "root_model_resnet18",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "root_data_metaworld/robosuite",
+      "node_type": "dataset",
+      "label": "root_data_metaworld/robosuite",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "root_data_2602.12032_real_setup",
+      "node_type": "dataset",
+      "label": "root_data_2602.12032_real_setup",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "root_model_octo",
+      "node_type": "dataset",
+      "label": "root_model_octo",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2602.12032_ID_naive_absolute_hurt",
+      "node_type": "claim",
+      "label": "2602.12032: hurt (-13.4 pp, n=3), ID, naive, absolute",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2602.12032_shift_naive_absolute_hurt",
+      "node_type": "claim",
+      "label": "2602.12032: hurt (-17.6 pp, n=2), shifted, naive, absolute",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2602.12032_ID_regularized_absolute_help",
+      "node_type": "claim",
+      "label": "2602.12032: help (+8.1 pp, n=1), ID, regularized, absolute",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2602.12032_shift_regularized_absolute_help",
+      "node_type": "claim",
+      "label": "2602.12032: help (+11.0 pp, n=1), shifted, regularized, absolute",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "paper_2605.13067",
+      "node_type": "paper",
+      "label": "2605.13067",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "root_data_2605.13067_real_setup",
+      "node_type": "dataset",
+      "label": "root_data_2605.13067_real_setup",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2605.13067_ID_naive_absolute_hurt",
+      "node_type": "claim",
+      "label": "2605.13067: hurt (-15.0 pp, n=1), ID, naive, absolute",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2605.13067_shift_naive_absolute_hurt",
+      "node_type": "claim",
+      "label": "2605.13067: hurt (-20.0 pp, n=1), shifted, naive, absolute",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2605.13067_ID_naive_relative_help",
+      "node_type": "claim",
+      "label": "2605.13067: help (+30.0 pp, n=1), ID, naive, relative",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2605.13067_shift_naive_relative_help",
+      "node_type": "claim",
+      "label": "2605.13067: help (+5.0 pp, n=1), shifted, naive, relative",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "paper_2607.07101",
+      "node_type": "paper",
+      "label": "2607.07101",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "root_model_dp",
+      "node_type": "dataset",
+      "label": "root_model_dp",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "root_data_metaworld",
+      "node_type": "dataset",
+      "label": "root_data_metaworld",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "root_data_rlbench",
+      "node_type": "dataset",
+      "label": "root_data_rlbench",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "root_data_robotwin",
+      "node_type": "dataset",
+      "label": "root_data_robotwin",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "root_data_2607.07101_real_setup",
+      "node_type": "dataset",
+      "label": "root_data_2607.07101_real_setup",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2607.07101_ID_naive_absolute_null",
+      "node_type": "claim",
+      "label": "2607.07101: null (-0.1 pp, n=7), ID, naive, absolute",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2607.07101_ID_naive_absolute_hurt",
+      "node_type": "claim",
+      "label": "2607.07101: hurt (-5.4 pp, n=1), ID, naive, absolute",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2607.07101_ID_naive_absolute_help",
+      "node_type": "claim",
+      "label": "2607.07101: help (+10.0 pp, n=1), ID, naive, absolute",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "root_data_2607.07101_sim_setup",
+      "node_type": "dataset",
+      "label": "root_data_2607.07101_sim_setup",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2607.07101_ID_regularized_grounded_help",
+      "node_type": "claim",
+      "label": "2607.07101: help (+10.9 pp, n=5), ID, regularized, grounded",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "paper_2601.16667",
+      "node_type": "paper",
+      "label": "2601.16667",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "root_data_libero",
+      "node_type": "dataset",
+      "label": "root_data_libero",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "root_data_2601.16667_real_setup",
+      "node_type": "dataset",
+      "label": "root_data_2601.16667_real_setup",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2601.16667_ID_naive_absolute_help",
+      "node_type": "claim",
+      "label": "2601.16667: help (+16.9 pp, n=2), ID, naive, absolute",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2601.16667_shift_naive_absolute_hurt",
+      "node_type": "claim",
+      "label": "2601.16667: hurt (-58.0 pp, n=1), shifted, naive, absolute",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "paper_2506.23944",
+      "node_type": "paper",
+      "label": "2506.23944",
+      "timestamp": "2025",
+      "metadata": {}
+    },
+    {
+      "node_id": "root_data_robomimic/mimicgen",
+      "node_type": "dataset",
+      "label": "root_data_robomimic/mimicgen",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2506.23944_ID_naive_absolute_hurt",
+      "node_type": "claim",
+      "label": "2506.23944: hurt (-18.0 pp, n=8), ID, naive, absolute",
+      "timestamp": "2025",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2506.23944_ID_naive_absolute_null",
+      "node_type": "claim",
+      "label": "2506.23944: null (-0.3 pp, n=5), ID, naive, absolute",
+      "timestamp": "2025",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2506.23944_ID_naive_absolute_help",
+      "node_type": "claim",
+      "label": "2506.23944: help (+8.1 pp, n=2), ID, naive, absolute",
+      "timestamp": "2025",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2506.23944_ID_regularized_absolute_help",
+      "node_type": "claim",
+      "label": "2506.23944: help (+6.0 pp, n=6), ID, regularized, absolute",
+      "timestamp": "2025",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2506.23944_ID_regularized_absolute_null",
+      "node_type": "claim",
+      "label": "2506.23944: null (+1.3 pp, n=3), ID, regularized, absolute",
+      "timestamp": "2025",
+      "metadata": {}
+    },
+    {
+      "node_id": "paper_2409.20537",
+      "node_type": "paper",
+      "label": "2409.20537",
+      "timestamp": "2024",
+      "metadata": {}
+    },
+    {
+      "node_id": "root_model_hpt",
+      "node_type": "dataset",
+      "label": "root_model_hpt",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "root_data_2409.20537_real_setup",
+      "node_type": "dataset",
+      "label": "root_data_2409.20537_real_setup",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2409.20537_ID_naive_absolute_help",
+      "node_type": "claim",
+      "label": "2409.20537: help (+16.6 pp, n=1), ID, naive, absolute",
+      "timestamp": "2024",
+      "metadata": {}
+    },
+    {
+      "node_id": "paper_2602.06575",
+      "node_type": "paper",
+      "label": "2602.06575",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "root_model_flower",
+      "node_type": "dataset",
+      "label": "root_model_flower",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "root_data_calvin",
+      "node_type": "dataset",
+      "label": "root_data_calvin",
+      "timestamp": null,
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2602.06575_ID_naive_absolute_null",
+      "node_type": "claim",
+      "label": "2602.06575: null (+0.4 pp, n=2), ID, naive, absolute",
+      "timestamp": "2026",
+      "metadata": {}
+    },
+    {
+      "node_id": "claim_2602.06575_ID_naive_absolute_hurt",
+      "node_type": "claim",
+      "label": "2602.06575: hurt (-5.8 pp, n=1), ID, naive, absolute",
+      "timestamp": "2026",
+      "metadata": {}
+    }
+  ],
+  "edges": [
+    {
+      "source": "paper_2509.18644",
+      "target": "root_model_pi0",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2509.18644",
+      "target": "root_data_2509.18644_real_setup",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_ID_naive_absolute_null",
+      "target": "paper_2509.18644",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_ID_naive_absolute_null",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_ID_naive_absolute_null",
+      "target": "H2_frame",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_ID_naive_absolute_null",
+      "target": "H3_fusion",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_ID_naive_absolute_null",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_ID_naive_absolute_null",
+      "target": "H5_heterogeneous",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2509.18644",
+      "target": "root_model_act",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2509.18644",
+      "target": "root_model_diffusionpolicy",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_shift_naive_absolute_hurt",
+      "target": "paper_2509.18644",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_shift_naive_absolute_hurt",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_shift_naive_absolute_hurt",
+      "target": "H2_frame",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_shift_naive_absolute_hurt",
+      "target": "H3_fusion",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_shift_naive_absolute_hurt",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_shift_naive_absolute_hurt",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_ID_naive_absolute_help",
+      "target": "paper_2509.18644",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_ID_naive_absolute_help",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_ID_naive_absolute_help",
+      "target": "H2_frame",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_ID_naive_absolute_help",
+      "target": "H3_fusion",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_ID_naive_absolute_help",
+      "target": "H4_observability",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2509.18644_ID_naive_absolute_help",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2608.03052",
+      "target": "root_model_pi0.5",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2608.03052",
+      "target": "root_data_robocasa365",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2608.03052_ID_naive_absolute_help",
+      "target": "paper_2608.03052",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2608.03052_ID_naive_absolute_help",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2608.03052_ID_naive_absolute_help",
+      "target": "H2_frame",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2608.03052_ID_naive_absolute_help",
+      "target": "H3_fusion",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2608.03052_ID_naive_absolute_help",
+      "target": "H4_observability",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2608.03052_ID_naive_absolute_help",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2608.03052_ID_naive_absolute_null",
+      "target": "paper_2608.03052",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2608.03052_ID_naive_absolute_null",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2608.03052_ID_naive_absolute_null",
+      "target": "H2_frame",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2608.03052_ID_naive_absolute_null",
+      "target": "H3_fusion",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2608.03052_ID_naive_absolute_null",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2608.03052_ID_naive_absolute_null",
+      "target": "H5_heterogeneous",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2602.12032",
+      "target": "root_model_resnet18",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2602.12032",
+      "target": "root_data_metaworld/robosuite",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2602.12032",
+      "target": "root_data_2602.12032_real_setup",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2602.12032",
+      "target": "root_model_octo",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_ID_naive_absolute_hurt",
+      "target": "paper_2602.12032",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_ID_naive_absolute_hurt",
+      "target": "H1_shift",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_ID_naive_absolute_hurt",
+      "target": "H2_frame",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_ID_naive_absolute_hurt",
+      "target": "H3_fusion",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_ID_naive_absolute_hurt",
+      "target": "H4_observability",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_ID_naive_absolute_hurt",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_shift_naive_absolute_hurt",
+      "target": "paper_2602.12032",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_shift_naive_absolute_hurt",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_shift_naive_absolute_hurt",
+      "target": "H2_frame",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_shift_naive_absolute_hurt",
+      "target": "H3_fusion",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_shift_naive_absolute_hurt",
+      "target": "H4_observability",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_shift_naive_absolute_hurt",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_ID_regularized_absolute_help",
+      "target": "paper_2602.12032",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_ID_regularized_absolute_help",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_ID_regularized_absolute_help",
+      "target": "H2_frame",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_ID_regularized_absolute_help",
+      "target": "H3_fusion",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_ID_regularized_absolute_help",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_ID_regularized_absolute_help",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_shift_regularized_absolute_help",
+      "target": "paper_2602.12032",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_shift_regularized_absolute_help",
+      "target": "H1_shift",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_shift_regularized_absolute_help",
+      "target": "H2_frame",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_shift_regularized_absolute_help",
+      "target": "H3_fusion",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_shift_regularized_absolute_help",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.12032_shift_regularized_absolute_help",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2605.13067",
+      "target": "root_model_act",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2605.13067",
+      "target": "root_data_2605.13067_real_setup",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_ID_naive_absolute_hurt",
+      "target": "paper_2605.13067",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_ID_naive_absolute_hurt",
+      "target": "H1_shift",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_ID_naive_absolute_hurt",
+      "target": "H2_frame",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_ID_naive_absolute_hurt",
+      "target": "H3_fusion",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_ID_naive_absolute_hurt",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_ID_naive_absolute_hurt",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_shift_naive_absolute_hurt",
+      "target": "paper_2605.13067",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_shift_naive_absolute_hurt",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_shift_naive_absolute_hurt",
+      "target": "H2_frame",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_shift_naive_absolute_hurt",
+      "target": "H3_fusion",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_shift_naive_absolute_hurt",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_shift_naive_absolute_hurt",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_ID_naive_relative_help",
+      "target": "paper_2605.13067",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_ID_naive_relative_help",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_ID_naive_relative_help",
+      "target": "H2_frame",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_ID_naive_relative_help",
+      "target": "H3_fusion",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_ID_naive_relative_help",
+      "target": "H4_observability",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_ID_naive_relative_help",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_shift_naive_relative_help",
+      "target": "paper_2605.13067",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_shift_naive_relative_help",
+      "target": "H1_shift",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_shift_naive_relative_help",
+      "target": "H2_frame",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_shift_naive_relative_help",
+      "target": "H3_fusion",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_shift_naive_relative_help",
+      "target": "H4_observability",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2605.13067_shift_naive_relative_help",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2607.07101",
+      "target": "root_model_dp",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2607.07101",
+      "target": "root_data_metaworld",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2607.07101",
+      "target": "root_data_rlbench",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2607.07101",
+      "target": "root_data_robotwin",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2607.07101",
+      "target": "root_model_pi0",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2607.07101",
+      "target": "root_data_2607.07101_real_setup",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_null",
+      "target": "paper_2607.07101",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_null",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_null",
+      "target": "H2_frame",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_null",
+      "target": "H3_fusion",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_null",
+      "target": "H4_observability",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_null",
+      "target": "H5_heterogeneous",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_hurt",
+      "target": "paper_2607.07101",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_hurt",
+      "target": "H1_shift",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_hurt",
+      "target": "H2_frame",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_hurt",
+      "target": "H3_fusion",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_hurt",
+      "target": "H4_observability",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_hurt",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_help",
+      "target": "paper_2607.07101",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_help",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_help",
+      "target": "H2_frame",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_help",
+      "target": "H3_fusion",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_help",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_naive_absolute_help",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2607.07101",
+      "target": "root_data_2607.07101_sim_setup",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_regularized_grounded_help",
+      "target": "paper_2607.07101",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_regularized_grounded_help",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_regularized_grounded_help",
+      "target": "H2_frame",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_regularized_grounded_help",
+      "target": "H3_fusion",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_regularized_grounded_help",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2607.07101_ID_regularized_grounded_help",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2601.16667",
+      "target": "root_model_pi0",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2601.16667",
+      "target": "root_data_libero",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2601.16667",
+      "target": "root_data_2601.16667_real_setup",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2601.16667_ID_naive_absolute_help",
+      "target": "paper_2601.16667",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2601.16667_ID_naive_absolute_help",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2601.16667_ID_naive_absolute_help",
+      "target": "H2_frame",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2601.16667_ID_naive_absolute_help",
+      "target": "H3_fusion",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2601.16667_ID_naive_absolute_help",
+      "target": "H4_observability",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2601.16667_ID_naive_absolute_help",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2601.16667_shift_naive_absolute_hurt",
+      "target": "paper_2601.16667",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2601.16667_shift_naive_absolute_hurt",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2601.16667_shift_naive_absolute_hurt",
+      "target": "H2_frame",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2601.16667_shift_naive_absolute_hurt",
+      "target": "H3_fusion",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2601.16667_shift_naive_absolute_hurt",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2601.16667_shift_naive_absolute_hurt",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2506.23944",
+      "target": "root_model_resnet18",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2506.23944",
+      "target": "root_data_robomimic/mimicgen",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_hurt",
+      "target": "paper_2506.23944",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_hurt",
+      "target": "H1_shift",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_hurt",
+      "target": "H2_frame",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_hurt",
+      "target": "H3_fusion",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_hurt",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_hurt",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_null",
+      "target": "paper_2506.23944",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_null",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_null",
+      "target": "H2_frame",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_null",
+      "target": "H3_fusion",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_null",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_null",
+      "target": "H5_heterogeneous",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_help",
+      "target": "paper_2506.23944",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_help",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_help",
+      "target": "H2_frame",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_help",
+      "target": "H3_fusion",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_help",
+      "target": "H4_observability",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_naive_absolute_help",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_regularized_absolute_help",
+      "target": "paper_2506.23944",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_regularized_absolute_help",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_regularized_absolute_help",
+      "target": "H2_frame",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_regularized_absolute_help",
+      "target": "H3_fusion",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_regularized_absolute_help",
+      "target": "H4_observability",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_regularized_absolute_help",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_regularized_absolute_null",
+      "target": "paper_2506.23944",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_regularized_absolute_null",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_regularized_absolute_null",
+      "target": "H2_frame",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_regularized_absolute_null",
+      "target": "H3_fusion",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_regularized_absolute_null",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2506.23944_ID_regularized_absolute_null",
+      "target": "H5_heterogeneous",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2409.20537",
+      "target": "root_model_hpt",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2409.20537",
+      "target": "root_data_2409.20537_real_setup",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2409.20537_ID_naive_absolute_help",
+      "target": "paper_2409.20537",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2409.20537_ID_naive_absolute_help",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2409.20537_ID_naive_absolute_help",
+      "target": "H2_frame",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2409.20537_ID_naive_absolute_help",
+      "target": "H3_fusion",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2409.20537_ID_naive_absolute_help",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2409.20537_ID_naive_absolute_help",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2602.06575",
+      "target": "root_model_flower",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "paper_2602.06575",
+      "target": "root_data_calvin",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.06575_ID_naive_absolute_null",
+      "target": "paper_2602.06575",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.06575_ID_naive_absolute_null",
+      "target": "H1_shift",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.06575_ID_naive_absolute_null",
+      "target": "H2_frame",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.06575_ID_naive_absolute_null",
+      "target": "H3_fusion",
+      "edge_type": "contradicts",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.06575_ID_naive_absolute_null",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.06575_ID_naive_absolute_null",
+      "target": "H5_heterogeneous",
+      "edge_type": "supports",
+      "confidence": 0.6,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.06575_ID_naive_absolute_hurt",
+      "target": "paper_2602.06575",
+      "edge_type": "derived_from",
+      "confidence": 1.0,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.06575_ID_naive_absolute_hurt",
+      "target": "H1_shift",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.06575_ID_naive_absolute_hurt",
+      "target": "H2_frame",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.06575_ID_naive_absolute_hurt",
+      "target": "H3_fusion",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.06575_ID_naive_absolute_hurt",
+      "target": "H4_observability",
+      "edge_type": "supports",
+      "confidence": 0.4,
+      "metadata": {}
+    },
+    {
+      "source": "claim_2602.06575_ID_naive_absolute_hurt",
+      "target": "H5_heterogeneous",
+      "edge_type": "contradicts",
+      "confidence": 0.4,
+      "metadata": {}
+    }
+  ]
+}

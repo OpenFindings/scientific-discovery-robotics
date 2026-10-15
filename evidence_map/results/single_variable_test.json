@@ -1,0 +1,858 @@
+{
+ "n_records": 75,
+ "n_papers": 9,
+ "class_counts": {
+  "hurt": 27,
+  "null": 23,
+  "help": 25
+ },
+ "single": {
+  "shift": {
+   "accuracy": 0.733,
+   "explains": false,
+   "levels": {
+    "ID": {
+     "pred": "help",
+     "n": 60,
+     "n_help": 23,
+     "n_hurt": 14,
+     "n_null": 23,
+     "counterexample_papers": [
+      "2506.23944",
+      "2602.06575",
+      "2602.12032",
+      "2605.13067",
+      "2607.07101"
+     ]
+    },
+    "spatial": {
+     "pred": "hurt",
+     "n": 13,
+     "n_help": 2,
+     "n_hurt": 11,
+     "n_null": 0,
+     "counterexample_papers": [
+      "2602.12032",
+      "2605.13067"
+     ]
+    },
+    "embodiment": {
+     "pred": "hurt",
+     "n": 1,
+     "n_help": 0,
+     "n_hurt": 1,
+     "n_null": 0,
+     "counterexample_papers": []
+    },
+    "perturbation": {
+     "pred": "hurt",
+     "n": 1,
+     "n_help": 0,
+     "n_hurt": 1,
+     "n_null": 0,
+     "counterexample_papers": []
+    }
+   }
+  },
+  "shift_any": {
+   "accuracy": 0.733,
+   "explains": false,
+   "levels": {
+    "ID": {
+     "pred": "help",
+     "n": 60,
+     "n_help": 23,
+     "n_hurt": 14,
+     "n_null": 23,
+     "counterexample_papers": [
+      "2506.23944",
+      "2602.06575",
+      "2602.12032",
+      "2605.13067",
+      "2607.07101"
+     ]
+    },
+    "shifted": {
+     "pred": "hurt",
+     "n": 15,
+     "n_help": 2,
+     "n_hurt": 13,
+     "n_null": 0,
+     "counterexample_papers": [
+      "2602.12032",
+      "2605.13067"
+     ]
+    }
+   }
+  },
+  "state_frame": {
+   "accuracy": 0.584,
+   "explains": false,
+   "levels": {
+    "absolute": {
+     "pred": "hurt",
+     "n": 68,
+     "n_help": 18,
+     "n_hurt": 27,
+     "n_null": 23,
+     "counterexample_papers": [
+      "2409.20537",
+      "2506.23944",
+      "2509.18644",
+      "2601.16667",
+      "2602.12032",
+      "2607.07101",
+      "2608.03052"
+     ]
+    },
+    "relative": {
+     "pred": "help",
+     "n": 2,
+     "n_help": 2,
+     "n_hurt": 0,
+     "n_null": 0,
+     "counterexample_papers": []
+    },
+    "grounded": {
+     "pred": "help",
+     "n": 5,
+     "n_help": 5,
+     "n_hurt": 0,
+     "n_null": 0,
+     "counterexample_papers": []
+    }
+   }
+  },
+  "fusion": {
+   "accuracy": 0.589,
+   "explains": false,
+   "levels": {
+    "naive": {
+     "pred": "hurt",
+     "n": 59,
+     "n_help": 12,
+     "n_hurt": 27,
+     "n_null": 20,
+     "counterexample_papers": [
+      "2409.20537",
+      "2506.23944",
+      "2509.18644",
+      "2601.16667",
+      "2605.13067",
+      "2607.07101",
+      "2608.03052"
+     ]
+    },
+    "regularized": {
+     "pred": "help",
+     "n": 16,
+     "n_help": 13,
+     "n_hurt": 0,
+     "n_null": 3,
+     "counterexample_papers": []
+    }
+   }
+  },
+  "velocity_terms": {
+   "accuracy": 0.542,
+   "explains": false,
+   "levels": {
+    "False": {
+     "pred": "help",
+     "n": 57,
+     "n_help": 18,
+     "n_hurt": 21,
+     "n_null": 18,
+     "counterexample_papers": [
+      "2506.23944",
+      "2509.18644",
+      "2601.16667",
+      "2602.06575",
+      "2602.12032",
+      "2605.13067",
+      "2607.07101"
+     ]
+    },
+    "True": {
+     "pred": "help",
+     "n": 18,
+     "n_help": 7,
+     "n_hurt": 6,
+     "n_null": 5,
+     "counterexample_papers": [
+      "2506.23944"
+     ]
+    }
+   }
+  },
+  "pretrained": {
+   "accuracy": 0.542,
+   "explains": false,
+   "levels": {
+    "True": {
+     "pred": "help",
+     "n": 26,
+     "n_help": 8,
+     "n_hurt": 8,
+     "n_null": 10,
+     "counterexample_papers": [
+      "2509.18644",
+      "2601.16667",
+      "2602.06575",
+      "2602.12032"
+     ]
+    },
+    "False": {
+     "pred": "help",
+     "n": 49,
+     "n_help": 17,
+     "n_hurt": 19,
+     "n_null": 13,
+     "counterexample_papers": [
+      "2506.23944",
+      "2509.18644",
+      "2602.12032",
+      "2605.13067",
+      "2607.07101"
+     ]
+    }
+   }
+  },
+  "platform": {
+   "accuracy": 0.542,
+   "explains": false,
+   "levels": {
+    "real": {
+     "pred": "help",
+     "n": 24,
+     "n_help": 8,
+     "n_hurt": 14,
+     "n_null": 2,
+     "counterexample_papers": [
+      "2509.18644",
+      "2601.16667",
+      "2602.12032",
+      "2605.13067"
+     ]
+    },
+    "sim": {
+     "pred": "help",
+     "n": 51,
+     "n_help": 17,
+     "n_hurt": 13,
+     "n_null": 21,
+     "counterexample_papers": [
+      "2506.23944",
+      "2602.06575",
+      "2602.12032",
+      "2607.07101"
+     ]
+    }
+   }
+  },
+  "wrist_camera": {
+   "accuracy": 0.637,
+   "explains": false,
+   "levels": {
+    "True": {
+     "pred": "hurt",
+     "n": 55,
+     "n_help": 16,
+     "n_hurt": 23,
+     "n_null": 16,
+     "counterexample_papers": [
+      "2506.23944",
+      "2509.18644",
+      "2601.16667",
+      "2605.13067",
+      "2608.03052"
+     ]
+    },
+    "False": {
+     "pred": "help",
+     "n": 20,
+     "n_help": 9,
+     "n_hurt": 4,
+     "n_null": 7,
+     "counterexample_papers": [
+      "2602.12032",
+      "2607.07101"
+     ]
+    }
+   }
+  },
+  "action_coarse": {
+   "accuracy": 0.658,
+   "explains": false,
+   "levels": {
+    "relative": {
+     "pred": "hurt",
+     "n": 13,
+     "n_help": 3,
+     "n_hurt": 9,
+     "n_null": 1,
+     "counterexample_papers": [
+      "2509.18644",
+      "2605.13067"
+     ]
+    },
+    "delta": {
+     "pred": "hurt",
+     "n": 47,
+     "n_help": 15,
+     "n_hurt": 15,
+     "n_null": 17,
+     "counterexample_papers": [
+      "2506.23944",
+      "2601.16667",
+      "2602.12032",
+      "2608.03052"
+     ]
+    },
+    "absolute": {
+     "pred": "hurt",
+     "n": 9,
+     "n_help": 1,
+     "n_hurt": 3,
+     "n_null": 5,
+     "counterexample_papers": [
+      "2607.07101"
+     ]
+    },
+    "mixed": {
+     "pred": "help",
+     "n": 6,
+     "n_help": 6,
+     "n_hurt": 0,
+     "n_null": 0,
+     "counterexample_papers": []
+    }
+   }
+  },
+  "history_gt1": {
+   "accuracy": 0.587,
+   "explains": false,
+   "levels": {
+    "False": {
+     "pred": "help",
+     "n": 67,
+     "n_help": 22,
+     "n_hurt": 22,
+     "n_null": 23,
+     "counterexample_papers": [
+      "2506.23944",
+      "2509.18644",
+      "2601.16667",
+      "2602.06575",
+      "2605.13067",
+      "2607.07101"
+     ]
+    },
+    "True": {
+     "pred": "hurt",
+     "n": 8,
+     "n_help": 3,
+     "n_hurt": 5,
+     "n_null": 0,
+     "counterexample_papers": [
+      "2602.12032",
+      "2608.03052"
+     ]
+    }
+   }
+  }
+ },
+ "pairs": {
+  "shift x shift_any": {
+   "accuracy": 0.733,
+   "explains": false
+  },
+  "shift x state_frame": {
+   "accuracy": 0.77,
+   "explains": false
+  },
+  "shift x fusion": {
+   "accuracy": 0.754,
+   "explains": false
+  },
+  "shift x velocity_terms": {
+   "accuracy": 0.733,
+   "explains": false
+  },
+  "shift x pretrained": {
+   "accuracy": 0.733,
+   "explains": false
+  },
+  "shift x platform": {
+   "accuracy": 0.733,
+   "explains": false
+  },
+  "shift x wrist_camera": {
+   "accuracy": 0.733,
+   "explains": false
+  },
+  "shift x action_coarse": {
+   "accuracy": 0.77,
+   "explains": false
+  },
+  "shift x history_gt1": {
+   "accuracy": 0.757,
+   "explains": false
+  },
+  "shift_any x state_frame": {
+   "accuracy": 0.77,
+   "explains": false
+  },
+  "shift_any x fusion": {
+   "accuracy": 0.754,
+   "explains": false
+  },
+  "shift_any x velocity_terms": {
+   "accuracy": 0.733,
+   "explains": false
+  },
+  "shift_any x pretrained": {
+   "accuracy": 0.733,
+   "explains": false
+  },
+  "shift_any x platform": {
+   "accuracy": 0.733,
+   "explains": false
+  },
+  "shift_any x wrist_camera": {
+   "accuracy": 0.733,
+   "explains": false
+  },
+  "shift_any x action_coarse": {
+   "accuracy": 0.77,
+   "explains": false
+  },
+  "shift_any x history_gt1": {
+   "accuracy": 0.757,
+   "explains": false
+  },
+  "state_frame x fusion": {
+   "accuracy": 0.663,
+   "explains": false
+  },
+  "state_frame x velocity_terms": {
+   "accuracy": 0.59,
+   "explains": false
+  },
+  "state_frame x pretrained": {
+   "accuracy": 0.584,
+   "explains": false
+  },
+  "state_frame x platform": {
+   "accuracy": 0.608,
+   "explains": false
+  },
+  "state_frame x wrist_camera": {
+   "accuracy": 0.71,
+   "explains": false
+  },
+  "state_frame x action_coarse": {
+   "accuracy": 0.731,
+   "explains": false
+  },
+  "state_frame x history_gt1": {
+   "accuracy": 0.587,
+   "explains": false
+  },
+  "fusion x velocity_terms": {
+   "accuracy": 0.589,
+   "explains": false
+  },
+  "fusion x pretrained": {
+   "accuracy": 0.589,
+   "explains": false
+  },
+  "fusion x platform": {
+   "accuracy": 0.598,
+   "explains": false
+  },
+  "fusion x wrist_camera": {
+   "accuracy": 0.673,
+   "explains": false
+  },
+  "fusion x action_coarse": {
+   "accuracy": 0.737,
+   "explains": false
+  },
+  "fusion x history_gt1": {
+   "accuracy": 0.629,
+   "explains": false
+  },
+  "velocity_terms x pretrained": {
+   "accuracy": 0.542,
+   "explains": false
+  },
+  "velocity_terms x platform": {
+   "accuracy": 0.542,
+   "explains": false
+  },
+  "velocity_terms x wrist_camera": {
+   "accuracy": 0.643,
+   "explains": false
+  },
+  "velocity_terms x action_coarse": {
+   "accuracy": 0.664,
+   "explains": false
+  },
+  "velocity_terms x history_gt1": {
+   "accuracy": 0.587,
+   "explains": false
+  },
+  "pretrained x platform": {
+   "accuracy": 0.586,
+   "explains": false
+  },
+  "pretrained x wrist_camera": {
+   "accuracy": 0.638,
+   "explains": false
+  },
+  "pretrained x action_coarse": {
+   "accuracy": 0.712,
+   "explains": false
+  },
+  "pretrained x history_gt1": {
+   "accuracy": 0.587,
+   "explains": false
+  },
+  "platform x wrist_camera": {
+   "accuracy": 0.692,
+   "explains": false
+  },
+  "platform x action_coarse": {
+   "accuracy": 0.692,
+   "explains": false
+  },
+  "platform x history_gt1": {
+   "accuracy": 0.587,
+   "explains": false
+  },
+  "wrist_camera x action_coarse": {
+   "accuracy": 0.671,
+   "explains": false
+  },
+  "wrist_camera x history_gt1": {
+   "accuracy": 0.658,
+   "explains": false
+  },
+  "action_coarse x history_gt1": {
+   "accuracy": 0.694,
+   "explains": false
+  }
+ },
+ "naive_only_single": {
+  "shift": {
+   "accuracy": 0.681,
+   "explains": false,
+   "levels": {
+    "ID": {
+     "pred": "help",
+     "n": 45,
+     "n_help": 11,
+     "n_hurt": 14,
+     "n_null": 20,
+     "counterexample_papers": [
+      "2506.23944",
+      "2602.06575",
+      "2602.12032",
+      "2605.13067",
+      "2607.07101"
+     ]
+    },
+    "spatial": {
+     "pred": "hurt",
+     "n": 12,
+     "n_help": 1,
+     "n_hurt": 11,
+     "n_null": 0,
+     "counterexample_papers": [
+      "2605.13067"
+     ]
+    },
+    "embodiment": {
+     "pred": "hurt",
+     "n": 1,
+     "n_help": 0,
+     "n_hurt": 1,
+     "n_null": 0,
+     "counterexample_papers": []
+    },
+    "perturbation": {
+     "pred": "hurt",
+     "n": 1,
+     "n_help": 0,
+     "n_hurt": 1,
+     "n_null": 0,
+     "counterexample_papers": []
+    }
+   }
+  },
+  "shift_any": {
+   "accuracy": 0.681,
+   "explains": false,
+   "levels": {
+    "ID": {
+     "pred": "help",
+     "n": 45,
+     "n_help": 11,
+     "n_hurt": 14,
+     "n_null": 20,
+     "counterexample_papers": [
+      "2506.23944",
+      "2602.06575",
+      "2602.12032",
+      "2605.13067",
+      "2607.07101"
+     ]
+    },
+    "shifted": {
+     "pred": "hurt",
+     "n": 14,
+     "n_help": 1,
+     "n_hurt": 13,
+     "n_null": 0,
+     "counterexample_papers": [
+      "2605.13067"
+     ]
+    }
+   }
+  },
+  "state_frame": {
+   "accuracy": 0.635,
+   "explains": false,
+   "levels": {
+    "absolute": {
+     "pred": "hurt",
+     "n": 57,
+     "n_help": 10,
+     "n_hurt": 27,
+     "n_null": 20,
+     "counterexample_papers": [
+      "2409.20537",
+      "2506.23944",
+      "2509.18644",
+      "2601.16667",
+      "2607.07101",
+      "2608.03052"
+     ]
+    },
+    "relative": {
+     "pred": "help",
+     "n": 2,
+     "n_help": 2,
+     "n_hurt": 0,
+     "n_null": 0,
+     "counterexample_papers": []
+    }
+   }
+  },
+  "velocity_terms": {
+   "accuracy": 0.558,
+   "explains": false,
+   "levels": {
+    "False": {
+     "pred": "hurt",
+     "n": 50,
+     "n_help": 11,
+     "n_hurt": 21,
+     "n_null": 18,
+     "counterexample_papers": [
+      "2409.20537",
+      "2506.23944",
+      "2509.18644",
+      "2601.16667",
+      "2605.13067",
+      "2607.07101",
+      "2608.03052"
+     ]
+    },
+    "True": {
+     "pred": "hurt",
+     "n": 9,
+     "n_help": 1,
+     "n_hurt": 6,
+     "n_null": 2,
+     "counterexample_papers": [
+      "2506.23944"
+     ]
+    }
+   }
+  },
+  "pretrained": {
+   "accuracy": 0.558,
+   "explains": false,
+   "levels": {
+    "True": {
+     "pred": "hurt",
+     "n": 24,
+     "n_help": 6,
+     "n_hurt": 8,
+     "n_null": 10,
+     "counterexample_papers": [
+      "2509.18644",
+      "2601.16667",
+      "2608.03052"
+     ]
+    },
+    "False": {
+     "pred": "hurt",
+     "n": 35,
+     "n_help": 6,
+     "n_hurt": 19,
+     "n_null": 10,
+     "counterexample_papers": [
+      "2409.20537",
+      "2506.23944",
+      "2605.13067",
+      "2607.07101"
+     ]
+    }
+   }
+  },
+  "platform": {
+   "accuracy": 0.558,
+   "explains": false,
+   "levels": {
+    "real": {
+     "pred": "hurt",
+     "n": 22,
+     "n_help": 6,
+     "n_hurt": 14,
+     "n_null": 2,
+     "counterexample_papers": [
+      "2409.20537",
+      "2509.18644",
+      "2601.16667",
+      "2605.13067",
+      "2607.07101"
+     ]
+    },
+    "sim": {
+     "pred": "hurt",
+     "n": 37,
+     "n_help": 6,
+     "n_hurt": 13,
+     "n_null": 18,
+     "counterexample_papers": [
+      "2506.23944",
+      "2601.16667",
+      "2608.03052"
+     ]
+    }
+   }
+  },
+  "wrist_camera": {
+   "accuracy": 0.619,
+   "explains": false,
+   "levels": {
+    "True": {
+     "pred": "hurt",
+     "n": 46,
+     "n_help": 10,
+     "n_hurt": 23,
+     "n_null": 13,
+     "counterexample_papers": [
+      "2506.23944",
+      "2509.18644",
+      "2601.16667",
+      "2605.13067",
+      "2608.03052"
+     ]
+    },
+    "False": {
+     "pred": "help",
+     "n": 13,
+     "n_help": 2,
+     "n_hurt": 4,
+     "n_null": 7,
+     "counterexample_papers": [
+      "2602.12032",
+      "2607.07101"
+     ]
+    }
+   }
+  },
+  "action_coarse": {
+   "accuracy": 0.712,
+   "explains": false,
+   "levels": {
+    "relative": {
+     "pred": "hurt",
+     "n": 13,
+     "n_help": 3,
+     "n_hurt": 9,
+     "n_null": 1,
+     "counterexample_papers": [
+      "2509.18644",
+      "2605.13067"
+     ]
+    },
+    "delta": {
+     "pred": "hurt",
+     "n": 36,
+     "n_help": 7,
+     "n_hurt": 15,
+     "n_null": 14,
+     "counterexample_papers": [
+      "2506.23944",
+      "2601.16667",
+      "2608.03052"
+     ]
+    },
+    "absolute": {
+     "pred": "hurt",
+     "n": 9,
+     "n_help": 1,
+     "n_hurt": 3,
+     "n_null": 5,
+     "counterexample_papers": [
+      "2607.07101"
+     ]
+    },
+    "mixed": {
+     "pred": "help",
+     "n": 1,
+     "n_help": 1,
+     "n_hurt": 0,
+     "n_null": 0,
+     "counterexample_papers": []
+    }
+   }
+  },
+  "history_gt1": {
+   "accuracy": 0.577,
+   "explains": false,
+   "levels": {
+    "False": {
+     "pred": "help",
+     "n": 53,
+     "n_help": 11,
+     "n_hurt": 22,
+     "n_null": 20,
+     "counterexample_papers": [
+      "2506.23944",
+      "2509.18644",
+      "2601.16667",
+      "2602.06575",
+      "2605.13067",
+      "2607.07101"
+     ]
+    },
+    "True": {
+     "pred": "hurt",
+     "n": 6,
+     "n_help": 1,
+     "n_hurt": 5,
+     "n_null": 0,
+     "counterexample_papers": [
+      "2608.03052"
+     ]
+    }
+   }
+  }
+ }
+}

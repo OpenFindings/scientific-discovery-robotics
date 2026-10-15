@@ -1,0 +1,494 @@
+[
+ {
+  "id": "1905.09335",
+  "year": 2019,
+  "title": "Imitation Learning from Video by Leveraging Proprioception",
+  "n_paths": 1
+ },
+ {
+  "id": "1905.11979",
+  "year": 2019,
+  "title": "Causal Confusion in Imitation Learning",
+  "n_paths": 2
+ },
+ {
+  "id": "1909.12271",
+  "year": 2019,
+  "title": "RLBench: The Robot Learning Benchmark & Learning Environment",
+  "n_paths": 3
+ },
+ {
+  "id": "2004.07780",
+  "year": 2020,
+  "title": "Shortcut learning in deep neural networks",
+  "n_paths": 1
+ },
+ {
+  "id": "2010.11251",
+  "year": 2020,
+  "title": "Learning quadrupedal locomotion over challenging terrain",
+  "n_paths": 1
+ },
+ {
+  "id": "2010.14876",
+  "year": 2020,
+  "title": "Fighting Copycat Agents in Behavioral Cloning from Observation Histories",
+  "n_paths": 2
+ },
+ {
+  "id": "efficiently guiding imitation learning agents with human gaze",
+  "year": 2020,
+  "title": "Efficiently Guiding Imitation Learning Agents with Human Gaze",
+  "n_paths": 1
+ },
+ {
+  "id": "fighting copycat agents in behavioral cloning from multiple observations",
+  "year": 2020,
+  "title": "Fighting Copycat Agents in Behavioral Cloning from Multiple Observations",
+  "n_paths": 1
+ },
+ {
+  "id": "2110.14118",
+  "year": 2021,
+  "title": "Object-Aware Regularization for Addressing Causal Confusion in Imitation Learning",
+  "n_paths": 2
+ },
+ {
+  "id": "2203.11211",
+  "year": 2022,
+  "title": "ReCCoVER: Detecting Causal Confusion for Explainable Reinforcement Learning",
+  "n_paths": 1
+ },
+ {
+  "id": "2204.06601",
+  "year": 2022,
+  "title": "Causal Confusion and Reward Misidentification in Preference-Based Reward Learning",
+  "n_paths": 1
+ },
+ {
+  "id": "2206.10816",
+  "year": 2022,
+  "title": "Fighting Fire with Fire: Avoiding DNN Shortcuts through Priming",
+  "n_paths": 2
+ },
+ {
+  "id": "2207.09705",
+  "year": 2022,
+  "title": "Resolving Copycat Problems in Visual Imitation Learning via Residual Action Prediction",
+  "n_paths": 2
+ },
+ {
+  "id": "reinforcement learning with vision-proprioception model for robot planar pushing",
+  "year": 2022,
+  "title": "Reinforcement Learning With Vision-Proprioception Model for Robot Planar Pushing",
+  "n_paths": 1
+ },
+ {
+  "id": "2303.04781",
+  "year": 2023,
+  "title": "Proprioception and Tail Control Enable Extreme Terrain Traversal by Quadruped Robots",
+  "n_paths": 1
+ },
+ {
+  "id": "2306.10007",
+  "year": 2023,
+  "title": "Robot Learning with Sensorimotor Pre-training",
+  "n_paths": 1
+ },
+ {
+  "id": "2306.17817",
+  "year": 2023,
+  "title": "Act3D: 3D Feature Field Transformers for Multi-Task Robotic Manipulation",
+  "n_paths": 1
+ },
+ {
+  "id": "2307.15980",
+  "year": 2023,
+  "title": "Initial State Interventions for Deconfounded Imitation Learning",
+  "n_paths": 1
+ },
+ {
+  "id": "2312.13139",
+  "year": 2023,
+  "title": "Unleashing Large-Scale Video Generative Pre-training for Visual Robot Manipulation",
+  "n_paths": 1
+ },
+ {
+  "id": "2312.17168",
+  "year": 2023,
+  "title": "Can Active Sampling Reduce Causal Confusion in Offline Reinforcement Learning?",
+  "n_paths": 2
+ },
+ {
+  "id": "2402.05655",
+  "year": 2024,
+  "title": "Real-time Holistic Robot Pose Estimation with Unknown States",
+  "n_paths": 1
+ },
+ {
+  "id": "2402.19249",
+  "year": 2024,
+  "title": "Mirage: Cross-Embodiment Zero-Shot Policy Transfer with Cross-Painting",
+  "n_paths": 1
+ },
+ {
+  "id": "2407.08693",
+  "year": 2024,
+  "title": "Robotic Control via Embodied Chain-of-Thought Reasoning",
+  "n_paths": 2
+ },
+ {
+  "id": "2409.13607",
+  "year": 2024,
+  "title": "RECON: Reducing Causal Confusion with Human-Placed Markers",
+  "n_paths": 1
+ },
+ {
+  "id": "2409.20537",
+  "year": 2024,
+  "title": "Scaling Proprioceptive-Visual Learning with Heterogeneous Pre-trained Transformers",
+  "n_paths": 2
+ },
+ {
+  "id": "2410.02479",
+  "year": 2024,
+  "title": "Cross-Embodiment Dexterous Grasping with Reinforcement Learning",
+  "n_paths": 1
+ },
+ {
+  "id": "2410.22325",
+  "year": 2024,
+  "title": "Robots Pre-train Robots: Manipulation-Centric Robotic Representation from Large-Scale Robot Datasets",
+  "n_paths": 1
+ },
+ {
+  "id": "2412.13877",
+  "year": 2024,
+  "title": "RoboMIND: Benchmark on Multi-embodiment Intelligence Normative Data for Robot Manipulation",
+  "n_paths": 1
+ },
+ {
+  "id": "enhancing reinforcement learning via causally correct input identification and targeted intervention",
+  "year": 2024,
+  "title": "Enhancing Reinforcement Learning via Causally Correct Input Identification and Targeted Intervention",
+  "n_paths": 1
+ },
+ {
+  "id": "mitigating causal confusion in vector-based behavior cloning for safer autonomous planning",
+  "year": 2024,
+  "title": "Mitigating Causal Confusion in Vector-Based Behavior Cloning for Safer Autonomous Planning",
+  "n_paths": 2
+ },
+ {
+  "id": "2501.04693",
+  "year": 2025,
+  "title": "Beyond Sight: Finetuning Generalist Robot Policies with Heterogeneous Sensors via Language Grounding",
+  "n_paths": 1
+ },
+ {
+  "id": "2504.17959",
+  "year": 2025,
+  "title": "Civil: causal and intuitive visual imitation learning",
+  "n_paths": 1
+ },
+ {
+  "id": "2505.09561",
+  "year": 2025,
+  "title": "Learning Long-Context Diffusion Policies via Past-Token Prediction",
+  "n_paths": 2
+ },
+ {
+  "id": "2506.13679",
+  "year": 2025,
+  "title": "ROSA: Harnessing Robot States for Vision-Language and Action Alignment",
+  "n_paths": 1
+ },
+ {
+  "id": "2507.19647",
+  "year": 2025,
+  "title": "GABRIL: Gaze-Based Regularization for Mitigating Causal Confusion in Imitation Learning",
+  "n_paths": 2
+ },
+ {
+  "id": "2507.22380",
+  "year": 2025,
+  "title": "Improving Generalization Ability of Robotic Imitation Learning by Resolving Causal Confusion in Observations",
+  "n_paths": 2
+ },
+ {
+  "id": "2508.06426",
+  "year": 2025,
+  "title": "Shortcut Learning in Generalist Robot Policies: The Role of Dataset Diversity and Fragmentation",
+  "n_paths": 1
+ },
+ {
+  "id": "2508.08113",
+  "year": 2025,
+  "title": "AimBot: A Simple Auxiliary Visual Cue to Enhance Spatial Awareness of Visuomotor Policies",
+  "n_paths": 1
+ },
+ {
+  "id": "2508.19476",
+  "year": 2025,
+  "title": "Gentle Object Retraction in Dense Clutter Using Multimodal Force Sensing and Imitation Learning",
+  "n_paths": 1
+ },
+ {
+  "id": "2509.08354",
+  "year": 2025,
+  "title": "Grasp Like Humans: Learning Generalizable Multifingered Grasping From Human Proprioceptive Sensorimotor Integration",
+  "n_paths": 1
+ },
+ {
+  "id": "2509.11865",
+  "year": 2025,
+  "title": "Tenma: Robust Cross-Embodiment Robot Manipulation with Diffusion Transformer",
+  "n_paths": 1
+ },
+ {
+  "id": "2509.18644",
+  "year": 2025,
+  "title": "Do You Need Proprioceptive States in Visuomotor Policies?",
+  "n_paths": 4
+ },
+ {
+  "id": "2509.23112",
+  "year": 2025,
+  "title": "FTACT: Force Torque aware Action Chunking Transformer for Pick-and-Reorient Bottle Task",
+  "n_paths": 1
+ },
+ {
+  "id": "2509.24797",
+  "year": 2025,
+  "title": "Fidelity-Aware Data Composition for Robust Robot Generalization",
+  "n_paths": 1
+ },
+ {
+  "id": "2509.25032",
+  "year": 2025,
+  "title": "AIRoA MoMa Dataset: A Large-Scale Hierarchical Dataset for Mobile Manipulation",
+  "n_paths": 1
+ },
+ {
+  "id": "2510.01711",
+  "year": 2025,
+  "title": "Contrastive Representation Regularization for Vision-Language-Action Models",
+  "n_paths": 2
+ },
+ {
+  "id": "2510.07882",
+  "year": 2025,
+  "title": "Towards Proprioception-Aware Embodied Planning for Dual-Arm Humanoid Robots",
+  "n_paths": 1
+ },
+ {
+  "id": "2511.00555",
+  "year": 2025,
+  "title": "Improving Robustness to Out-of-Distribution States in Imitation Learning via Deep Koopman-Boosted Diffusion Policy",
+  "n_paths": 2
+ },
+ {
+  "id": "2511.14396",
+  "year": 2025,
+  "title": "Continuous Vision-Language-Action Co-Learning with Semantic-Physical Alignment for Behavioral Cloning",
+  "n_paths": 1
+ },
+ {
+  "id": "2512.20166",
+  "year": 2025,
+  "title": "LoLA: Long Horizon Latent Action Learning for General Robot Manipulation",
+  "n_paths": 1
+ },
+ {
+  "id": "2512.20876",
+  "year": 2025,
+  "title": "Proprioception Enhances Vision Language Model in Generating Captions and Subtask Segmentations for Robot Task",
+  "n_paths": 1
+ },
+ {
+  "id": "adapt your body: mitigating proprioception shifts in imitation learning",
+  "year": 2025,
+  "title": "Adapt Your Body: Mitigating Proprioception Shifts in Imitation Learning",
+  "n_paths": 1
+ },
+ {
+  "id": "causal contrastive learning with data augmentations for imitation-based planning",
+  "year": 2025,
+  "title": "Causal Contrastive Learning with Data Augmentations for Imitation-Based Planning",
+  "n_paths": 2
+ },
+ {
+  "id": "2601.14133",
+  "year": 2026,
+  "title": "TwinBrainVLA: Unleashing the Potential of Generalist VLMs for Embodied Tasks via Asymmetric Mixture-of-Transformers",
+  "n_paths": 1
+ },
+ {
+  "id": "2601.16667",
+  "year": 2026,
+  "title": "ReViP: Mitigating False Completion in Vision-Language-Action Models with Vision-Proprioception Rebalance",
+  "n_paths": 2
+ },
+ {
+  "id": "2602.07322",
+  "year": 2026,
+  "title": "Action-to-Action Flow Matching",
+  "n_paths": 1
+ },
+ {
+  "id": "2602.12032",
+  "year": 2026,
+  "title": "When would Vision-Proprioception Policies Fail in Robotic Manipulation?",
+  "n_paths": 3
+ },
+ {
+  "id": "2604.07993",
+  "year": 2026,
+  "title": "HEX: Humanoid-Aligned Experts for Cross-Embodiment Whole-Body Manipulation",
+  "n_paths": 1
+ },
+ {
+  "id": "2605.12369",
+  "year": 2026,
+  "title": "GuidedVLA: Specifying Task-Relevant Factors via Plug-and-Play Action Attention Specialization",
+  "n_paths": 1
+ },
+ {
+  "id": "2605.13067",
+  "year": 2026,
+  "title": "When Absolute State Fails: Evaluating Proprioceptive Encodings for Robust Manipulation",
+  "n_paths": 2
+ },
+ {
+  "id": "2606.17046",
+  "year": 2026,
+  "title": "Geometric Action Model for Robot Policy Learning",
+  "n_paths": 2
+ },
+ {
+  "id": "2606.24450",
+  "year": 2026,
+  "title": "NoContactNoWorries: Estimating Contact through Vision and Proprioception for In-Hand Dexterous Manipulation",
+  "n_paths": 1
+ },
+ {
+  "id": "2607.07101",
+  "year": 2026,
+  "title": "GeoProp: Grounding Robot State in Vision for Generalist Manipulation",
+  "n_paths": 2
+ },
+ {
+  "id": "2607.25516",
+  "year": 2026,
+  "title": "A Causality-aware Infer-diagnose-refine Framework for Test-time Modality Adaptation in VLA Models",
+  "n_paths": 1
+ },
+ {
+  "id": "2608.03052",
+  "year": 2026,
+  "title": "How Should Vision-Language-Action Models Use Proprioceptive State?",
+  "n_paths": 5
+ },
+ {
+  "id": "2608.17453",
+  "year": 2026,
+  "title": "EATR-Stereo: Embodiment-Aware Token Routing of Paired Stereo Evidence for Humanoid Vision-Language-Action Control",
+  "n_paths": 1
+ },
+ {
+  "id": "2609.06302",
+  "year": 2026,
+  "title": "CST-WM: A Causally Structured World Model for Embodied Visual Tracking",
+  "n_paths": 1
+ },
+ {
+  "id": "2609.12641",
+  "year": 2026,
+  "title": "Breaking the Vision-Action Shortcut: Latent Interface Training for Generalizable Robotics Foundation Models",
+  "n_paths": 1
+ },
+ {
+  "id": "2609.16815",
+  "year": 2026,
+  "title": "Rethinking Visual Embodiment Dependence in Visuomotor Policies",
+  "n_paths": 2
+ },
+ {
+  "id": "2609.30833",
+  "year": 2026,
+  "title": "Fast Plans, Faithful Actions: Closing the Planning-Execution Gap in Hierarchical Vision-Language-Action Models",
+  "n_paths": 2
+ },
+ {
+  "id": "2609.37165",
+  "year": 2026,
+  "title": "Disentangling Spurious Correlations in Vision-Language-Action Models via Predicting Domain-Invariant Latent Lookahead",
+  "n_paths": 1
+ },
+ {
+  "id": "2609.38616",
+  "year": 2026,
+  "title": "Correcting WHERE, Preserving HOW: Compositional Generalization for Vision-Language-Action Models via Referential Guidance",
+  "n_paths": 1
+ },
+ {
+  "id": "2609.39145",
+  "year": 2026,
+  "title": "Blackout vs. Freeze: Analyzing Physical Failure Modes of VLAs under Camera Faults",
+  "n_paths": 3
+ },
+ {
+  "id": "2610.02813",
+  "year": 2026,
+  "title": "Register-Routed Delayed Fusion: Rewiring Shortcut-Prone Observation Fusion in Visuomotor Imitation",
+  "n_paths": 5
+ },
+ {
+  "id": "2610.04616",
+  "year": 2026,
+  "title": "PerturBot: Breaking Shortcut Priors in Vision-Language-Action Models with Perturbative Training",
+  "n_paths": 2
+ },
+ {
+  "id": "2610.07015",
+  "year": 2026,
+  "title": "LEAP: Making Privileged Geometry Supervision Effective for Visuomotor Learning",
+  "n_paths": 4
+ },
+ {
+  "id": "2610.10912",
+  "year": 2026,
+  "title": "When Listening Becomes Easier: Scrubbing Visual Cues for Shortcut-Free VLAs",
+  "n_paths": 1
+ },
+ {
+  "id": "2610.14854",
+  "year": 2026,
+  "title": "DEFT-VLA: Stage-Localized Force Specialization for Contact-Rich Robotic Manipulation",
+  "n_paths": 1
+ },
+ {
+  "id": "arvip: adversarial regularization in visuomotor policies for robotic vla purpose",
+  "year": 2026,
+  "title": "ARViP: Adversarial Regularization in Visuomotor Policies for Robotic VLA Purpose",
+  "n_paths": 1
+ },
+ {
+  "id": "restoring the right stream: training-free ood robustness for vision\u2013language\u2013action policies",
+  "year": 2026,
+  "title": "Restoring the Right Stream: Training-Free OOD Robustness for Vision\u2013Language\u2013Action Policies",
+  "n_paths": 3
+ },
+ {
+  "id": "teleoperation signal characterization for data-driven robot learning",
+  "year": 2026,
+  "title": "Teleoperation Signal Characterization for Data-Driven Robot Learning",
+  "n_paths": 1
+ },
+ {
+  "id": "think proprioceptively: embodied visual reasoning for vla manipulation",
+  "year": 2026,
+  "title": "Think Proprioceptively: Embodied Visual Reasoning for VLA Manipulation",
+  "n_paths": 1
+ }
+]
