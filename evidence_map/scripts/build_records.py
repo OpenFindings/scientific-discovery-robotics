@@ -14,7 +14,10 @@ fusion: naive (concat / token / projector) or regularized (method that
   explicitly rebalances or grounds state: GAP, NADA, GeoProp, ...)
 shift: ID (test inside training distribution), spatial (object / table /
   base position outside training range), embodiment, perturbation
-  (state-vision mismatch injected at test time)
+  (state-vision mismatch injected at test time), robot_init (robot
+  start configuration outside the demonstrated range), visual_fault
+  (camera blackout / frozen frame / occlusion of the robot in the image;
+  the robot configuration itself stays in distribution)
 """
 import json
 from pathlib import Path
@@ -183,6 +186,32 @@ c = dict(comparison="fusion", backbone="ACT", pretrained=False, state_frame="abs
 add("2610.02813", 2026, "robomimic Square nominal", 18.0, platform="sim", shift="ID", location="Table I", **c)
 add("2610.02813", 2026, "real held-out positions, 3 tasks mean", 51.7, platform="real", shift="spatial",
     location="Table II", **c)
+
+# 2609.39145 Blackout vs Freeze: pi0.5 and GR00T retrained with vs without proprio,
+# LIBERO Spatial/Object/Goal, n=450 per condition; EEF+gripper state, absolute.
+for bb, vals in [("pi0.5", dict(clean=-1.3, scene_blackout=19.8, wrist_blackout=11.3,
+                                 scene_frozen=5.6, wrist_frozen=3.6)),
+                 ("GR00T", dict(clean=1.6, scene_blackout=17.2, wrist_blackout=12.2,
+                                 scene_frozen=4.2, wrist_frozen=0.0))]:
+    c = dict(platform="sim", benchmark="LIBERO", backbone=bb, pretrained=True, state_frame="absolute",
+             action_space="delta_eef", wrist_camera=True, location="Table 5")
+    for k, e in vals.items():
+        add("2609.39145", 2026, f"{bb} {k.replace('_', ' ')}", e,
+            shift="ID" if k == "clean" else "visual_fault", **c)
+for bb, arm, wr, obj in [("pi0.5", 44.6, 42.6, 0.0), ("GR00T", 30.0, 68.6, 0.0)]:
+    c = dict(platform="sim", benchmark="LIBERO", backbone=bb, pretrained=True, state_frame="absolute",
+             action_space="delta_eef", wrist_camera=True, shift="visual_fault", location="Table 10")
+    add("2609.39145", 2026, f"{bb} scene view: arm links + palm masked", arm, **c)
+    add("2609.39145", 2026, f"{bb} wrist view: robot masked", wr, **c)
+    add("2609.39145", 2026, f"{bb} wrist view: objects masked", obj, **c)
+
+# 2511.00555 D3P: Diffusion Policy vision+joint proprio vs vision-only, RLBench 6 tasks x 40
+c = dict(platform="sim", benchmark="RLBench", backbone="DiffusionPolicy", pretrained=False,
+         state_frame="absolute", action_space="absolute_joint", wrist_camera=True, location="Table I")
+add("2511.00555", 2025, "6 tasks, fixed initial joints", 3.4, shift="ID", **c)
+add("2511.00555", 2025, "6 tasks, initial joints randomized +-10 deg", -22.5, shift="robot_init", **c)
+
+# NEW_ROWS_MARKER
 
 OUT.write_text("".join(json.dumps(r) + "\n" for r in rows))
 print(len(rows), "records ->", OUT)
