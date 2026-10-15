@@ -1,0 +1,61 @@
+# 3x2 pilot: proprioceptive-state encoding x shift type on LIBERO / LIBERO-Plus.
+# Design rationale: research/pilot_3x2_liberoplus.md. Everything not listed
+# under `arms` is held fixed across arms.
+
+backbone:
+  model: pi0.5            # openpi pi05_base, full fine-tune
+  init: pi05_base         # same base weights for every arm
+  cameras: [agentview, eye_in_hand]   # scene + wrist, both arms of every contrast
+  action_space: delta_eef_chunk       # LIBERO default (OSC delta pose + gripper)
+  action_horizon: 10
+  replan_every: 5
+
+training:
+  data: libero_all_four_suites        # standard LIBERO demos only (no LIBERO-Plus training set)
+  updates: 10000          # Blackout-vs-Freeze recipe, so arm R vs N replicates their contrast
+  batch_size: 32
+  lr: 5.0e-5
+  warmup: 1000
+  ema_decay: 0.999
+  seeds: [41, 42, 43, 44] # same 4 seeds in every arm; extend to 6 if stage-0 seed SD > 6 pp
+  blackout_augmentation: false        # no fault exposure in training for any arm
+
+arms:
+  N:  # no state
+    state: none           # state tokens omitted from the prompt (not zero-filled)
+  R:  # raw state, as in the openpi LIBERO recipe
+    state: absolute       # [eef_pos(3), eef_axis_angle(3), gripper_qpos(2)], base frame
+    fusion: naive         # discretized state tokens in the prefix
+  C:  # corrected state
+    state: episode_relative   # pos_t - pos_0, axis_angle(R_0^T R_t), gripper_qpos absolute
+    fusion: naive
+    norm_stats: recomputed    # quantile normalization refit on the relative vectors
+  # Pre-planned extension (stage 2, only if budget allows):
+  # D: {state: absolute, fusion: regularized, state_token_dropout: 0.3}
+
+instances:                # paired across every arm, seed and condition
+  suites: [spatial, object, goal, long]
+  tasks_per_suite: 10
+  init_states_per_task: 10   # LIBERO init-state indices 0-9
+  total: 400
+
+conditions:
+  ID:        {kind: clean}
+  K_robot:   {kind: config, generator: libero_plus.robot_init, magnitudes: [0.1, 0.2, 0.3]}
+  K_layout:  {kind: config, generator: libero_plus.layout_O2_target_pose, levels: [low, high]}
+  F_scene:   {kind: visual, fault: blackout, camera: agentview, onset: episode_start}   # primary
+  F_wrist:   {kind: visual, fault: blackout, camera: eye_in_hand, onset: after_gripper_closure,
+              closure_rule: "finger width < 0.020 m for 3 steps, then U{0..10} step delay"}  # secondary
+  # Secondary, for comparability with published numbers only (not in the decision rule):
+  LP_official: {kind: mixed, sets: [libero_plus.robot, libero_plus.layout, libero_plus.camera]}
+
+episode_limits: {spatial: 220, object: 280, goal: 300, long: 520}
+eval_seed: 7
+
+primary_contrasts:        # success(arm) - success(N), percentage points
+  RK: {arm: R, conditions: [K_robot, K_layout]}
+  CK: {arm: C, conditions: [K_robot, K_layout]}
+  RF: {arm: R, conditions: [F_scene]}
+  CF: {arm: C, conditions: [F_scene]}
+classification: {help: "> +3 pp and 95% CI excludes 0", hurt: "< -3 pp and 95% CI excludes 0", else: null}
+multiplicity: holm_over_4_primary

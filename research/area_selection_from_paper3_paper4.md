@@ -251,6 +251,8 @@ choice within a few weeks.
   result in Paper 3's sense, and publishable on its own.
 
 ### 5.3 Pilot the discriminating experiment (2–4 weeks, modest compute)
+> **Superseded (2026-10-15):** the evidence map narrowed this to a 3 × 2 design (state encoding × shift type) on LIBERO-Plus. See `research/pilot_3x2_liberoplus.md`. The factorial below is kept for the record.
+
 - **Factorial design:** state {none, absolute EEF, EEF-delta, noised} ×
   action {absolute, relative EEF} × cameras {wrist-only, wrist + third-person}
   × shift {in-distribution, height, horizontal, unseen embodiment}.
