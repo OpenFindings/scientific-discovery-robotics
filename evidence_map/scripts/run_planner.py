@@ -6,8 +6,11 @@ Paper 3-informed utility weights. Requires the sibling checkout
 ../scientific-evidence-planner (Paper 4) for the `planner` package.
 
 Graph construction:
-  * one claim node per (paper, cell); cell = (shift ID/shifted,
-    fusion naive/regularized, state frame, effect class); its label
+  * one claim node per (paper, cell); cell = (shift group ID / config /
+    visual, fusion naive/regularized, state frame absolute/corrected,
+    effect class); config = spatial, embodiment, robot_init or injected
+    perturbation; visual = camera fault (robot configuration in
+    distribution); corrected = relative, grounded or aligned. Its label
     carries the paper-cell mean effect.
   * claim -derived_from-> paper -derived_from-> provenance roots:
     the backbone family and the benchmark/robot setup. Two papers that
@@ -51,7 +54,17 @@ HYPS = {
     "H4_observability": "State helps when cameras miss task-relevant information "
                         "(single fixed view, bimanual relations); redundant with full wrist views.",
     "H5_heterogeneous": "No general factor: effects are task- and setup-specific noise.",
+    # Added after reading the remaining flagged papers (post hoc, see README):
+    "H6_shift_type": "Sign is set by the TYPE of shift: state hurts when the robot/scene "
+                     "configuration leaves the training range, helps when the cameras fail.",
+    "H7_shift_x_encoding": "State hurts only under configuration shift AND raw (absolute, "
+                           "naive) encoding; corrected frame or regularised fusion makes it help "
+                           "there; it helps under camera faults; neutral-to-helpful in distribution.",
 }
+
+
+def shift_group(s):
+    return "ID" if s == "ID" else "visual" if s == "visual_fault" else "config"
 
 
 def cell_class(e):
@@ -61,15 +74,21 @@ def cell_class(e):
 def predict(h, c):
     """Effect class each hypothesis predicts for a cell (None = no prediction)."""
     if h == "H1_shift":
-        return "hurt" if c["shifted"] else "not_hurt"
+        return "hurt" if c["shift"] != "ID" else "not_hurt"
     if h == "H2_frame":
-        return "help" if c["frame"] in ("relative", "grounded") else "hurt"
+        return "help" if c["frame"] == "corrected" else "hurt"
     if h == "H3_fusion":
         return "hurt" if c["fusion"] == "naive" else "help"
     if h == "H4_observability":
-        return "help" if not c["wrist"] else "not_help"
+        return "help" if (not c["wrist"] or c["shift"] == "visual") else "not_help"
     if h == "H5_heterogeneous":
         return "null"
+    if h == "H6_shift_type":
+        return {"config": "hurt", "visual": "help"}.get(c["shift"], "not_hurt")
+    if h == "H7_shift_x_encoding":
+        if c["shift"] == "config":
+            return "hurt" if (c["frame"] == "absolute" and c["fusion"] == "naive") else "help"
+        return "help" if c["shift"] == "visual" else "not_hurt"
     return None
 
 
@@ -103,7 +122,8 @@ def main():
     rows = [r for r in rows if r["effect_pp"] is not None and r["comparison"] == "presence"]
     cells = defaultdict(list)
     for r in rows:
-        key = (r["paper"], r["shift"] != "ID", r["fusion"], r["state_frame"], cell_class(r["effect_pp"]))
+        key = (r["paper"], shift_group(r["shift"]), r["fusion"],
+               "absolute" if r["state_frame"] == "absolute" else "corrected", cell_class(r["effect_pp"]))
         cells[key].append(r)
 
     g = EvidenceGraph()
@@ -111,7 +131,7 @@ def main():
     for hid, desc in HYPS.items():
         g.add_node(EvidenceNode(hid, NodeType.HYPOTHESIS, desc))
     added = set()
-    for (paper, shifted, fusion, frame, k), rs in cells.items():
+    for (paper, shift, fusion, frame, k), rs in cells.items():
         year = str(rs[0]["year"])
         pid = f"paper_{paper}"
         if pid not in added:
@@ -125,13 +145,13 @@ def main():
                 if not any(e.target == root for e in g.out_edges(pid, EdgeType.DERIVED_FROM)):
                     g.add_edge(EvidenceEdge(pid, root, EdgeType.DERIVED_FROM))
         mean = sum(r["effect_pp"] for r in rs) / len(rs)
-        cid = f"claim_{paper}_{'shift' if shifted else 'ID'}_{fusion}_{frame}_{k}"
+        cid = f"claim_{paper}_{shift}_{fusion}_{frame}_{k}"
         g.add_node(EvidenceNode(cid, NodeType.CLAIM,
                                 f"{paper}: {k} ({mean:+.1f} pp, n={len(rs)}), "
-                                f"{'shifted' if shifted else 'ID'}, {fusion}, {frame}",
+                                f"{shift}, {fusion}, {frame}",
                                 timestamp=year))
         g.add_edge(EvidenceEdge(cid, pid, EdgeType.DERIVED_FROM))
-        c = dict(shifted=shifted, fusion=fusion, frame=frame, cls=k,
+        c = dict(shift=shift, fusion=fusion, frame=frame, cls=k,
                  velocity=any(r["velocity_terms"] for r in rs),
                  wrist=all(r["wrist_camera"] for r in rs), n_rows=len(rs))
         for hid, pol, conf in rules(c):
@@ -155,7 +175,9 @@ def main():
     loo = {}
     for paper in sorted({cid.split("_")[1] for cid, _ in cell_info}):
         post, _ = update_beliefs(hyps, [(cid, c) for cid, c in cell_info if cid.split("_")[1] != paper])
-        loo[paper] = dict(winner=max(post, key=post.get), p_H1=post["H1_shift"])
+        win = max(post, key=post.get)
+        loo[paper] = dict(winner=win, p_winner=post[win], p_H1=post["H1_shift"],
+                          p_H7=post["H7_shift_x_encoding"])
     experiments = rank_cell_experiments(posterior, cell_info)
 
     # Per-hypothesis evidence summary (planner graph queries).
@@ -196,9 +218,9 @@ def main():
     for h, p in posterior.items():
         sc = scorecard[h]
         print(f"  {h:18s} p={p:.3f}  correct on {sc['correct']}/{sc['decided']} cells")
-    print("\nleave-one-paper-out: winner / p(H1)")
+    print("\nleave-one-paper-out: winner p(winner) / p(H1) / p(H7)")
     for paper, v in loo.items():
-        print(f"  drop {paper}: {v['winner']} {v['p_H1']:.3f}")
+        print(f"  drop {paper}: {v['winner']} {v['p_winner']:.3f} / {v['p_H1']:.3f} / {v['p_H7']:.3f}")
     print("\ncell-level experiments by expected information gain:")
     for e in experiments[:8]:
         print(f"  EIG={e['eig_bits']:.3f}  {e['cell']}  existing papers={e['existing_papers']}  "
@@ -233,25 +255,25 @@ def rank_cell_experiments(posterior, cell_info):
     uncertainty about which hypothesis is right?"""
     covered = defaultdict(set)
     for cid, c in cell_info:
-        key = ("shifted" if c["shifted"] else "ID", c["frame"], c["fusion"], "wrist" if c["wrist"] else "no-wrist")
+        key = (c["shift"], c["frame"], c["fusion"], "wrist" if c["wrist"] else "no-wrist")
         covered[key].add(cid.split("_")[1])
     h_now = entropy(list(posterior.values()))
     out = []
-    for shifted in (False, True):
-        for frame in ("absolute", "relative", "grounded"):
+    for shift in ("ID", "config", "visual"):
+        for frame in ("absolute", "corrected"):
             for fusion in ("naive", "regularized"):
                 for wrist in (True, False):
-                    c = dict(shifted=shifted, frame=frame, fusion=fusion, wrist=wrist)
+                    c = dict(shift=shift, frame=frame, fusion=fusion, wrist=wrist)
                     eig = 0.0
                     for o in OUTCOMES:
                         joint = {h: p * likelihood(h, c, o) for h, p in posterior.items()}
                         z = sum(joint.values())
                         eig += z * (h_now - entropy([v / z for v in joint.values()]))
-                    key = ("shifted" if shifted else "ID", frame, fusion, "wrist" if wrist else "no-wrist")
+                    key = (shift, frame, fusion, "wrist" if wrist else "no-wrist")
                     out.append(dict(cell=" / ".join(key), eig_bits=round(eig, 4),
                                     existing_papers=sorted(covered.get(key, set())),
                                     action_type="rerun_analysis (released checkpoints, sim)"
-                                    if not shifted else "run_simulation + collect_observation (real shift)"))
+                                    if shift == "ID" else "run_simulation + collect_observation (real shift)"))
     return sorted(out, key=lambda e: (-e["eig_bits"], len(e["existing_papers"])))
 
 

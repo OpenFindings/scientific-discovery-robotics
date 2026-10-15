@@ -11,6 +11,15 @@ Decision rule (fixed before running this script):
     (b) no level contains counterexamples (non-null records whose sign
         differs from the level's prediction) from 2+ different papers.
   Same test is then run on pairs of variables.
+
+Update after reading the remaining flagged papers: two shift levels
+(robot_init, visual_fault) and one frame level (aligned) appeared in the
+data, so 'shift' and 'state_frame' now have more levels under the same
+rule. Two coarsened variables are ADDED POST HOC and reported separately
+('posthoc'), since they were defined after seeing the new data:
+  shift_group     ID / config (spatial, embodiment, robot_init,
+                  perturbation) / visual (visual_fault)
+  frame_corrected absolute vs relative/grounded/aligned
 """
 import itertools
 import json
@@ -35,6 +44,9 @@ for r in rows:
     r["action_coarse"] = coarse_action(r["action_space"])
     r["history_gt1"] = r["state_history"] > 1
     r["shift_any"] = "ID" if r["shift"] == "ID" else "shifted"
+    r["shift_group"] = ("ID" if r["shift"] == "ID" else "visual" if r["shift"] == "visual_fault"
+                        else "config")
+    r["frame_corrected"] = r["state_frame"] != "absolute"
 
 VARS = ["shift", "shift_any", "state_frame", "fusion", "velocity_terms", "pretrained",
         "platform", "wrist_camera", "action_coarse", "history_gt1"]
@@ -85,6 +97,16 @@ for r in naive:
     r["w"] = 1 / sum(1 for x in naive if x["paper"] == r["paper"])
 report["naive_only_single"] = {v: evaluate(lambda r, v=v: r[v], naive) for v in VARS if v != "fusion"}
 
+# Post hoc (defined after seeing the new papers): full data, original weights.
+for r in rows:
+    r["w"] = 1 / npaper[r["paper"]]
+POSTHOC = ["shift_group", "frame_corrected"]
+report["posthoc"] = {v: evaluate(lambda r, v=v: r[v], rows) for v in POSTHOC}
+report["posthoc"]["shift_group x frame_corrected"] = evaluate(
+    lambda r: (r["shift_group"], r["frame_corrected"]), rows)
+report["posthoc"]["shift_group x frame_corrected x fusion"] = evaluate(
+    lambda r: (r["shift_group"], r["frame_corrected"], r["fusion"]), rows)
+
 (ROOT / "results").mkdir(exist_ok=True)
 (ROOT / "results" / "single_variable_test.json").write_text(json.dumps(report, indent=1))
 print(f"{report['n_records']} presence records from {report['n_papers']} papers; {report['class_counts']}\n")
@@ -97,5 +119,8 @@ for k, res in sorted(report["pairs"].items(), key=lambda kv: -kv[1]["accuracy"])
 print("\nnaive-fusion subset, single variable")
 for v, res in sorted(report["naive_only_single"].items(), key=lambda kv: -kv[1]["accuracy"])[:5]:
     print(f"  {v:22s} {res['accuracy']:.3f}  {res['explains']}")
+print("\npost hoc")
+for k, res in report["posthoc"].items():
+    print(f"  {k:44s} {res['accuracy']:.3f}  {res['explains']}")
 print("\nshift levels:", json.dumps(report["single"]["shift"]["levels"], indent=1))
 print("naive shift_any levels:", json.dumps(report["naive_only_single"]["shift_any"]["levels"], indent=1))

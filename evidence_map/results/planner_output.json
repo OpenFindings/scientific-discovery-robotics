@@ -7,39 +7,48 @@
  },
  "hypothesis_evidence": {
   "H1_shift": {
-   "n_support": 20,
-   "n_contradict": 7,
-   "support_conf": 10.4,
-   "contradict_conf": 3.2,
-   "n_provenance_roots": 24,
+   "n_support": 31,
+   "n_contradict": 12,
+   "support_conf": 16.2,
+   "contradict_conf": 5.8,
+   "n_provenance_roots": 29,
    "support_papers": [
+    "2402.19249",
     "2409.20537",
     "2506.23944",
+    "2508.08113",
     "2509.18644",
+    "2511.00555",
+    "2512.20166",
     "2601.16667",
     "2602.06575",
     "2602.12032",
     "2605.13067",
     "2607.07101",
-    "2608.03052"
+    "2608.03052",
+    "2609.39145"
    ],
    "contradict_papers": [
+    "2402.19249",
     "2506.23944",
     "2602.06575",
     "2602.12032",
     "2605.13067",
-    "2607.07101"
+    "2607.07101",
+    "2609.39145"
    ]
   },
   "H2_frame": {
-   "n_support": 12,
-   "n_contradict": 15,
-   "support_conf": 5.8,
-   "contradict_conf": 7.8,
-   "n_provenance_roots": 24,
+   "n_support": 16,
+   "n_contradict": 27,
+   "support_conf": 8.0,
+   "contradict_conf": 14.0,
+   "n_provenance_roots": 29,
    "support_papers": [
+    "2402.19249",
     "2506.23944",
     "2509.18644",
+    "2511.00555",
     "2601.16667",
     "2602.06575",
     "2602.12032",
@@ -47,25 +56,32 @@
     "2607.07101"
    ],
    "contradict_papers": [
+    "2402.19249",
     "2409.20537",
     "2506.23944",
+    "2508.08113",
     "2509.18644",
+    "2511.00555",
+    "2512.20166",
     "2601.16667",
     "2602.06575",
     "2602.12032",
     "2607.07101",
-    "2608.03052"
+    "2608.03052",
+    "2609.39145"
    ]
   },
   "H3_fusion": {
-   "n_support": 13,
-   "n_contradict": 14,
-   "support_conf": 6.4,
-   "contradict_conf": 7.2,
-   "n_provenance_roots": 24,
+   "n_support": 17,
+   "n_contradict": 26,
+   "support_conf": 8.4,
+   "contradict_conf": 13.6,
+   "n_provenance_roots": 29,
    "support_papers": [
+    "2402.19249",
     "2506.23944",
     "2509.18644",
+    "2511.00555",
     "2601.16667",
     "2602.06575",
     "2602.12032",
@@ -73,200 +89,412 @@
     "2607.07101"
    ],
    "contradict_papers": [
+    "2402.19249",
     "2409.20537",
     "2506.23944",
+    "2508.08113",
     "2509.18644",
+    "2511.00555",
+    "2512.20166",
     "2601.16667",
     "2602.06575",
     "2605.13067",
     "2607.07101",
-    "2608.03052"
+    "2608.03052",
+    "2609.39145"
    ]
   },
   "H4_observability": {
-   "n_support": 16,
-   "n_contradict": 11,
-   "support_conf": 7.8,
-   "contradict_conf": 5.8,
-   "n_provenance_roots": 24,
+   "n_support": 24,
+   "n_contradict": 19,
+   "support_conf": 12.0,
+   "contradict_conf": 10.0,
+   "n_provenance_roots": 29,
    "support_papers": [
+    "2402.19249",
     "2409.20537",
     "2506.23944",
+    "2508.08113",
     "2509.18644",
+    "2511.00555",
+    "2512.20166",
     "2601.16667",
     "2602.06575",
     "2602.12032",
     "2605.13067",
     "2607.07101",
-    "2608.03052"
+    "2608.03052",
+    "2609.39145"
    ],
    "contradict_papers": [
+    "2402.19249",
     "2506.23944",
     "2509.18644",
+    "2511.00555",
+    "2512.20166",
     "2601.16667",
     "2602.12032",
     "2605.13067",
     "2607.07101",
-    "2608.03052"
+    "2608.03052",
+    "2609.39145"
    ]
   },
   "H5_heterogeneous": {
-   "n_support": 6,
-   "n_contradict": 21,
-   "support_conf": 3.4,
-   "contradict_conf": 10.2,
-   "n_provenance_roots": 24,
+   "n_support": 12,
+   "n_contradict": 31,
+   "support_conf": 6.6,
+   "contradict_conf": 15.4,
+   "n_provenance_roots": 29,
    "support_papers": [
+    "2402.19249",
     "2506.23944",
+    "2508.08113",
     "2509.18644",
+    "2512.20166",
     "2602.06575",
     "2607.07101",
-    "2608.03052"
+    "2608.03052",
+    "2609.39145"
    ],
    "contradict_papers": [
+    "2402.19249",
     "2409.20537",
     "2506.23944",
     "2509.18644",
+    "2511.00555",
+    "2512.20166",
     "2601.16667",
     "2602.06575",
     "2602.12032",
     "2605.13067",
     "2607.07101",
-    "2608.03052"
+    "2608.03052",
+    "2609.39145"
+   ]
+  },
+  "H6_shift_type": {
+   "n_support": 32,
+   "n_contradict": 11,
+   "support_conf": 16.8,
+   "contradict_conf": 5.2,
+   "n_provenance_roots": 29,
+   "support_papers": [
+    "2402.19249",
+    "2409.20537",
+    "2506.23944",
+    "2508.08113",
+    "2509.18644",
+    "2511.00555",
+    "2512.20166",
+    "2601.16667",
+    "2602.06575",
+    "2602.12032",
+    "2605.13067",
+    "2607.07101",
+    "2608.03052",
+    "2609.39145"
+   ],
+   "contradict_papers": [
+    "2402.19249",
+    "2506.23944",
+    "2602.06575",
+    "2602.12032",
+    "2605.13067",
+    "2607.07101",
+    "2609.39145"
+   ]
+  },
+  "H7_shift_x_encoding": {
+   "n_support": 34,
+   "n_contradict": 9,
+   "support_conf": 17.6,
+   "contradict_conf": 4.4,
+   "n_provenance_roots": 29,
+   "support_papers": [
+    "2402.19249",
+    "2409.20537",
+    "2506.23944",
+    "2508.08113",
+    "2509.18644",
+    "2511.00555",
+    "2512.20166",
+    "2601.16667",
+    "2602.06575",
+    "2602.12032",
+    "2605.13067",
+    "2607.07101",
+    "2608.03052",
+    "2609.39145"
+   ],
+   "contradict_papers": [
+    "2402.19249",
+    "2506.23944",
+    "2602.06575",
+    "2602.12032",
+    "2605.13067",
+    "2607.07101",
+    "2609.39145"
    ]
   }
  },
  "gaps": [],
  "posterior": {
-  "H1_shift": 0.9717,
-  "H2_frame": 0.0018,
-  "H3_fusion": 0.0106,
-  "H4_observability": 0.0158,
-  "H5_heterogeneous": 0.0001
+  "H1_shift": 0.0465,
+  "H2_frame": 0.0,
+  "H3_fusion": 0.0,
+  "H4_observability": 0.0003,
+  "H5_heterogeneous": 0.0,
+  "H6_shift_type": 0.2788,
+  "H7_shift_x_encoding": 0.6745
  },
  "scorecard": {
   "H1_shift": {
-   "correct": 20,
-   "decided": 27
+   "correct": 31,
+   "decided": 43
   },
   "H2_frame": {
-   "correct": 12,
-   "decided": 27
+   "correct": 16,
+   "decided": 43
   },
   "H3_fusion": {
-   "correct": 13,
-   "decided": 27
+   "correct": 17,
+   "decided": 43
   },
   "H4_observability": {
-   "correct": 16,
-   "decided": 27
+   "correct": 24,
+   "decided": 43
   },
   "H5_heterogeneous": {
-   "correct": 6,
-   "decided": 27
+   "correct": 12,
+   "decided": 43
+  },
+  "H6_shift_type": {
+   "correct": 32,
+   "decided": 43
+  },
+  "H7_shift_x_encoding": {
+   "correct": 34,
+   "decided": 43
   }
  },
  "leave_one_paper_out": {
+  "2402.19249": {
+   "winner": "H7_shift_x_encoding",
+   "p_winner": 0.6732,
+   "p_H1": 0.0464,
+   "p_H7": 0.6732
+  },
   "2409.20537": {
-   "winner": "H1_shift",
-   "p_H1": 0.9722
+   "winner": "H7_shift_x_encoding",
+   "p_winner": 0.6746,
+   "p_H1": 0.0465,
+   "p_H7": 0.6746
   },
   "2506.23944": {
-   "winner": "H1_shift",
-   "p_H1": 0.8902
+   "winner": "H7_shift_x_encoding",
+   "p_winner": 0.6744,
+   "p_H1": 0.0465,
+   "p_H7": 0.6744
+  },
+  "2508.08113": {
+   "winner": "H7_shift_x_encoding",
+   "p_winner": 0.6745,
+   "p_H1": 0.0465,
+   "p_H7": 0.6745
   },
   "2509.18644": {
-   "winner": "H1_shift",
-   "p_H1": 0.9473
+   "winner": "H7_shift_x_encoding",
+   "p_winner": 0.6743,
+   "p_H1": 0.0464,
+   "p_H7": 0.6743
+  },
+  "2511.00555": {
+   "winner": "H7_shift_x_encoding",
+   "p_winner": 0.6744,
+   "p_H1": 0.0465,
+   "p_H7": 0.6744
+  },
+  "2512.20166": {
+   "winner": "H7_shift_x_encoding",
+   "p_winner": 0.6744,
+   "p_H1": 0.0465,
+   "p_H7": 0.6744
   },
   "2601.16667": {
-   "winner": "H1_shift",
-   "p_H1": 0.9346
+   "winner": "H7_shift_x_encoding",
+   "p_winner": 0.6743,
+   "p_H1": 0.0464,
+   "p_H7": 0.6743
   },
   "2602.06575": {
-   "winner": "H1_shift",
-   "p_H1": 0.9595
+   "winner": "H7_shift_x_encoding",
+   "p_winner": 0.6745,
+   "p_H1": 0.0465,
+   "p_H7": 0.6745
   },
   "2602.12032": {
-   "winner": "H1_shift",
-   "p_H1": 0.9064
+   "winner": "H7_shift_x_encoding",
+   "p_winner": 0.5702,
+   "p_H1": 0.0611,
+   "p_H7": 0.5702
   },
   "2605.13067": {
-   "winner": "H1_shift",
-   "p_H1": 0.9717
+   "winner": "H7_shift_x_encoding",
+   "p_winner": 0.5712,
+   "p_H1": 0.0612,
+   "p_H7": 0.5712
   },
   "2607.07101": {
-   "winner": "H1_shift",
-   "p_H1": 0.9631
+   "winner": "H7_shift_x_encoding",
+   "p_winner": 0.6745,
+   "p_H1": 0.0465,
+   "p_H7": 0.6745
   },
   "2608.03052": {
-   "winner": "H1_shift",
-   "p_H1": 0.8777
+   "winner": "H7_shift_x_encoding",
+   "p_winner": 0.6744,
+   "p_H1": 0.0465,
+   "p_H7": 0.6744
+  },
+  "2609.39145": {
+   "winner": "H7_shift_x_encoding",
+   "p_winner": 0.5473,
+   "p_H1": 0.2262,
+   "p_H7": 0.5473
   }
  },
  "cell_experiments": [
   {
-   "cell": "shifted / relative / regularized / no-wrist",
-   "eig_bits": 0.0437,
+   "cell": "config / absolute / regularized / wrist",
+   "eig_bits": 0.3176,
    "existing_papers": [],
    "action_type": "run_simulation + collect_observation (real shift)"
   },
   {
-   "cell": "shifted / grounded / regularized / no-wrist",
-   "eig_bits": 0.0437,
+   "cell": "config / corrected / regularized / wrist",
+   "eig_bits": 0.3176,
    "existing_papers": [],
    "action_type": "run_simulation + collect_observation (real shift)"
   },
   {
-   "cell": "shifted / absolute / regularized / no-wrist",
-   "eig_bits": 0.041,
+   "cell": "config / corrected / naive / wrist",
+   "eig_bits": 0.3176,
+   "existing_papers": [
+    "2605.13067"
+   ],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "config / corrected / regularized / no-wrist",
+   "eig_bits": 0.3175,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "config / absolute / regularized / no-wrist",
+   "eig_bits": 0.3175,
    "existing_papers": [
     "2602.12032"
    ],
    "action_type": "run_simulation + collect_observation (real shift)"
   },
   {
-   "cell": "shifted / relative / naive / no-wrist",
-   "eig_bits": 0.0278,
-   "existing_papers": [],
-   "action_type": "run_simulation + collect_observation (real shift)"
-  },
-  {
-   "cell": "shifted / grounded / naive / no-wrist",
-   "eig_bits": 0.0278,
-   "existing_papers": [],
-   "action_type": "run_simulation + collect_observation (real shift)"
-  },
-  {
-   "cell": "shifted / relative / regularized / wrist",
-   "eig_bits": 0.0268,
-   "existing_papers": [],
-   "action_type": "run_simulation + collect_observation (real shift)"
-  },
-  {
-   "cell": "shifted / grounded / regularized / wrist",
-   "eig_bits": 0.0268,
-   "existing_papers": [],
-   "action_type": "run_simulation + collect_observation (real shift)"
-  },
-  {
-   "cell": "shifted / absolute / naive / no-wrist",
-   "eig_bits": 0.025,
+   "cell": "config / corrected / naive / no-wrist",
+   "eig_bits": 0.3175,
    "existing_papers": [
+    "2402.19249"
+   ],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "visual / absolute / naive / no-wrist",
+   "eig_bits": 0.0697,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "visual / absolute / regularized / wrist",
+   "eig_bits": 0.0697,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "visual / absolute / regularized / no-wrist",
+   "eig_bits": 0.0697,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "visual / corrected / naive / wrist",
+   "eig_bits": 0.0697,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "visual / corrected / naive / no-wrist",
+   "eig_bits": 0.0697,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "visual / corrected / regularized / wrist",
+   "eig_bits": 0.0697,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "visual / corrected / regularized / no-wrist",
+   "eig_bits": 0.0697,
+   "existing_papers": [],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "visual / absolute / naive / wrist",
+   "eig_bits": 0.0697,
+   "existing_papers": [
+    "2609.39145"
+   ],
+   "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "config / absolute / naive / no-wrist",
+   "eig_bits": 0.0005,
+   "existing_papers": [
+    "2402.19249",
     "2602.12032"
    ],
    "action_type": "run_simulation + collect_observation (real shift)"
   },
   {
-   "cell": "shifted / absolute / regularized / wrist",
-   "eig_bits": 0.024,
-   "existing_papers": [],
-   "action_type": "run_simulation + collect_observation (real shift)"
+   "cell": "ID / absolute / regularized / no-wrist",
+   "eig_bits": 0.0001,
+   "existing_papers": [
+    "2602.12032"
+   ],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
+  },
+  {
+   "cell": "ID / corrected / naive / no-wrist",
+   "eig_bits": 0.0001,
+   "existing_papers": [
+    "2402.19249"
+   ],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
+  },
+  {
+   "cell": "ID / corrected / regularized / no-wrist",
+   "eig_bits": 0.0001,
+   "existing_papers": [
+    "2607.07101"
+   ],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
   },
   {
    "cell": "ID / absolute / naive / no-wrist",
-   "eig_bits": 0.0165,
+   "eig_bits": 0.0001,
    "existing_papers": [
+    "2402.19249",
     "2409.20537",
     "2602.12032",
     "2607.07101"
@@ -274,108 +502,53 @@
    "action_type": "rerun_analysis (released checkpoints, sim)"
   },
   {
-   "cell": "ID / relative / naive / no-wrist",
-   "eig_bits": 0.0158,
-   "existing_papers": [],
-   "action_type": "rerun_analysis (released checkpoints, sim)"
-  },
-  {
-   "cell": "ID / grounded / naive / no-wrist",
-   "eig_bits": 0.0158,
-   "existing_papers": [],
-   "action_type": "rerun_analysis (released checkpoints, sim)"
-  },
-  {
-   "cell": "ID / absolute / regularized / no-wrist",
-   "eig_bits": 0.0125,
-   "existing_papers": [
-    "2602.12032"
-   ],
-   "action_type": "rerun_analysis (released checkpoints, sim)"
-  },
-  {
-   "cell": "ID / relative / regularized / no-wrist",
-   "eig_bits": 0.0117,
-   "existing_papers": [],
-   "action_type": "rerun_analysis (released checkpoints, sim)"
-  },
-  {
-   "cell": "ID / grounded / regularized / no-wrist",
-   "eig_bits": 0.0117,
-   "existing_papers": [
-    "2607.07101"
-   ],
-   "action_type": "rerun_analysis (released checkpoints, sim)"
-  },
-  {
-   "cell": "ID / absolute / naive / wrist",
-   "eig_bits": 0.0108,
-   "existing_papers": [
-    "2506.23944",
-    "2509.18644",
-    "2601.16667",
-    "2602.06575",
-    "2605.13067",
-    "2608.03052"
-   ],
-   "action_type": "rerun_analysis (released checkpoints, sim)"
-  },
-  {
-   "cell": "shifted / grounded / naive / wrist",
-   "eig_bits": 0.0103,
-   "existing_papers": [],
-   "action_type": "run_simulation + collect_observation (real shift)"
-  },
-  {
-   "cell": "shifted / relative / naive / wrist",
-   "eig_bits": 0.0103,
-   "existing_papers": [
-    "2605.13067"
-   ],
-   "action_type": "run_simulation + collect_observation (real shift)"
-  },
-  {
-   "cell": "ID / grounded / naive / wrist",
-   "eig_bits": 0.0102,
-   "existing_papers": [],
-   "action_type": "rerun_analysis (released checkpoints, sim)"
-  },
-  {
-   "cell": "ID / relative / naive / wrist",
-   "eig_bits": 0.0102,
-   "existing_papers": [
-    "2605.13067"
-   ],
-   "action_type": "rerun_analysis (released checkpoints, sim)"
-  },
-  {
-   "cell": "shifted / absolute / naive / wrist",
-   "eig_bits": 0.0074,
+   "cell": "config / absolute / naive / wrist",
+   "eig_bits": 0.0001,
    "existing_papers": [
     "2509.18644",
+    "2511.00555",
     "2601.16667",
     "2605.13067"
    ],
    "action_type": "run_simulation + collect_observation (real shift)"
+  },
+  {
+   "cell": "ID / corrected / regularized / wrist",
+   "eig_bits": -0.0,
+   "existing_papers": [],
+   "action_type": "rerun_analysis (released checkpoints, sim)"
   },
   {
    "cell": "ID / absolute / regularized / wrist",
-   "eig_bits": 0.0071,
+   "eig_bits": -0.0,
    "existing_papers": [
     "2506.23944"
    ],
    "action_type": "rerun_analysis (released checkpoints, sim)"
   },
   {
-   "cell": "ID / relative / regularized / wrist",
-   "eig_bits": 0.0065,
-   "existing_papers": [],
+   "cell": "ID / corrected / naive / wrist",
+   "eig_bits": -0.0,
+   "existing_papers": [
+    "2605.13067"
+   ],
    "action_type": "rerun_analysis (released checkpoints, sim)"
   },
   {
-   "cell": "ID / grounded / regularized / wrist",
-   "eig_bits": 0.0065,
-   "existing_papers": [],
+   "cell": "ID / absolute / naive / wrist",
+   "eig_bits": -0.0,
+   "existing_papers": [
+    "2506.23944",
+    "2508.08113",
+    "2509.18644",
+    "2511.00555",
+    "2512.20166",
+    "2601.16667",
+    "2602.06575",
+    "2605.13067",
+    "2608.03052",
+    "2609.39145"
+   ],
    "action_type": "rerun_analysis (released checkpoints, sim)"
   }
  ],

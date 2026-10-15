@@ -18,6 +18,9 @@ shift: ID (test inside training distribution), spatial (object / table /
   start configuration outside the demonstrated range), visual_fault
   (camera blackout / frozen frame / occlusion of the robot in the image;
   the robot configuration itself stays in distribution)
+state_frame: absolute, relative (episode/EEF-relative), grounded (projected
+  into the image), aligned (absolute but re-expressed in a frame consistent
+  across embodiments, e.g. Mirage state alignment)
 """
 import json
 from pathlib import Path
@@ -217,6 +220,52 @@ c = dict(platform="sim", benchmark="LIBERO", backbone="Qwen2.5-VL LoLA", pretrai
          state_frame="absolute", action_space="delta_eef", wrist_camera=True, shift="ID", location="Table 7")
 for suite, e in [("Goal", 7.2), ("Object", 6.0), ("Spatial", 2.5), ("Long", 10.5)]:
     add("2512.20166", 2025, f"LIBERO-{suite}", e, **c)
+
+# 2610.07015 LEAP: state kept out of vs also fed to the auxiliary geometry decoder (both
+# policies use state in the action head). effect = keep-out minus also-in. RoboTwin, 5 tasks x 300.
+c = dict(comparison="fusion", platform="sim", benchmark="RoboTwin", pretrained=False,
+         state_frame="absolute", action_space="absolute_joint", wrist_camera=True, shift="ID",
+         fusion="regularized", location="Tables 3, 6")
+add("2610.07015", 2026, "DP: state out of geometry decoder", 18.4, backbone="DiffusionPolicy", **c)
+add("2610.07015", 2026, "ACT: state out of geometry decoder", 12.2, backbone="ACT", **c)
+
+# 2610.14854 DEFT-VLA: state-token masking curriculum vs none (both with state), real pipette task, n=20
+add("2610.14854", 2026, "pipette tip attachment: state-token masking", 55.0, comparison="fusion",
+    platform="real", backbone="pi0.5", pretrained=True, state_frame="absolute", action_space="delta_eef",
+    wrist_camera=True, shift="ID", fusion="regularized", location="Table III")
+
+# 2402.19249 Mirage: separate state+image vs image-only policies, same data/architecture.
+# Sim: robosuite BC-RNN, EEF pose state (robosuite aligns EEF frames across arms, so the
+# target-robot state is frame-aligned); 5 tasks, means over Lift/Stack/Can/TwoPiece/Square.
+c = dict(platform="sim", benchmark="robosuite", backbone="BC-RNN", pretrained=False,
+         state_frame="aligned", action_space="delta_eef", wrist_camera=False, location="Tables II, III")
+for t, e in dict(Lift=-2, Stack=0, Can=34, TwoPieceAssembly=9, Square=-7).items():
+    add("2402.19249", 2024, f"source Franka {t}", float(e), shift="ID", **c)
+for name, e in [("UR5e, cross-painted, Franka gripper", 18.4), ("UR5e, cross-painted, default gripper", 25.6),
+                ("Kinova, cross-painted, Franka gripper", 4.0), ("Kinova, cross-painted, default gripper", 11.2)]:
+    add("2402.19249", 2024, f"{name}, 5-task mean", e, shift="embodiment", **c)
+for name, e in [("UR5e, raw images, Franka gripper", -7.8), ("UR5e, raw images, default gripper", -7.2),
+                ("Kinova, raw images, Franka gripper", -5.0), ("Kinova, raw images, default gripper", 2.2)]:
+    add("2402.19249", 2024, f"{name}, 5-task mean", e, shift="embodiment", **c)
+# Real: Diffusion Policy, third-person camera only, 4 tasks (Tiger/Drawer/Cup/Toaster), 10% steps
+c = dict(platform="real", backbone="DiffusionPolicy", pretrained=False, action_space="delta_eef",
+         wrist_camera=False, location="Table IV")
+add("2402.19249", 2024, "real source robot, 4-task mean", 7.5, shift="ID", state_frame="absolute", **c)
+add("2402.19249", 2024, "real target gripper, state aligned + cross-painting", 5.0, shift="embodiment",
+    state_frame="aligned", **c)
+add("2402.19249", 2024, "real UR5, state aligned + cross-painting", 12.5, shift="embodiment",
+    state_frame="aligned", **c)
+add("2402.19249", 2024, "real target gripper, state NOT aligned + cross-painting", -40.0, shift="embodiment",
+    state_frame="absolute", **c)
+add("2402.19249", 2024, "real UR5, state NOT aligned + cross-painting", -45.0, shift="embodiment",
+    state_frame="absolute", **c)
+
+# 2508.08113 AimBot: pi0 trained with zeroed proprio vs with proprio, LIBERO, 4 runs/suite
+c = dict(platform="sim", benchmark="LIBERO", backbone="pi0", pretrained=True, state_frame="absolute",
+         action_space="delta_eef", wrist_camera=True, shift="ID", location="Tables 4, 8")
+for suite, e, e_aim in [("Spatial", 0.2, 0.3), ("Object", 2.4, 1.6), ("Goal", 1.0, 2.4), ("Long", 2.0, 3.0)]:
+    add("2508.08113", 2025, f"pi0 LIBERO-{suite}", e, **c)
+    add("2508.08113", 2025, f"pi0+AimBot overlay LIBERO-{suite}", e_aim, **c)
 
 # NEW_ROWS_MARKER
 
