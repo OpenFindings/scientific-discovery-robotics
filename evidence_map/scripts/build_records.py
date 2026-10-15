@@ -211,6 +211,13 @@ c = dict(platform="sim", benchmark="RLBench", backbone="DiffusionPolicy", pretra
 add("2511.00555", 2025, "6 tasks, fixed initial joints", 3.4, shift="ID", **c)
 add("2511.00555", 2025, "6 tasks, initial joints randomized +-10 deg", -22.5, shift="robot_init", **c)
 
+# 2512.20166 LoLA: Qwen2.5-VL + flow-matching expert, with vs without state (state injected
+# through its SALR state transformer; no anti-shortcut mechanism, so coded naive). LIBERO.
+c = dict(platform="sim", benchmark="LIBERO", backbone="Qwen2.5-VL LoLA", pretrained=True,
+         state_frame="absolute", action_space="delta_eef", wrist_camera=True, shift="ID", location="Table 7")
+for suite, e in [("Goal", 7.2), ("Object", 6.0), ("Spatial", 2.5), ("Long", 10.5)]:
+    add("2512.20166", 2025, f"LIBERO-{suite}", e, **c)
+
 # NEW_ROWS_MARKER
 
 OUT.write_text("".join(json.dumps(r) + "\n" for r in rows))
