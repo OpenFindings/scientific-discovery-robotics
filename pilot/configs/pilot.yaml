@@ -64,9 +64,14 @@ episode_limits: {spatial: 220, object: 280, goal: 300, long: 520}
 eval_seed: 7
 
 primary_contrasts:        # success(arm) - success(N), percentage points
-  RK: {arm: R, conditions: [K_robot, K_layout]}
-  CK: {arm: C, conditions: [K_robot, K_layout]}
+  # K split after the CPU simulation study (research/sim_findings_cpu_libero.md): robot-init and
+  # layout shifts moved state effects in opposite directions in the ego-oracle analogue.
+  RK_robot:  {arm: R, conditions: ["robot_init:0.1"]}
+  CK_robot:  {arm: C, conditions: ["robot_init:0.1"]}
+  RK_layout: {arm: R, conditions: ["layout:0.06"]}
+  CK_layout: {arm: C, conditions: ["layout:0.06"]}
   RF: {arm: R, conditions: [F_scene]}
   CF: {arm: C, conditions: [F_scene]}
 classification: {help: "> +3 pp and 95% CI excludes 0", hurt: "< -3 pp and 95% CI excludes 0", else: null}
-multiplicity: holm_over_4_primary
+multiplicity: holm_over_6_primary   # RK/CK x robot/layout + RF + CF
+blind_floor: [blind_T, blind_A]   # pilot/sim/blind_* run on the same instances, reported per condition

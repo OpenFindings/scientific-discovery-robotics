@@ -124,11 +124,34 @@ Reading the table:
 - **CF − RF measures T:** does correcting the frame cost the camera-fault benefit?
 - **RK is a manipulation check.** If raw state does not hurt under K, the shift is too weak to test anything (§6).
 
+### 3a. Revision after the CPU simulation study (2026-10-16)
+
+`research/sim_findings_cpu_libero.md` ran the pilot's perturbations in real LIBERO with blind and oracle-perception MLP policies. Its ego-centric oracle (wrist-camera-like object offsets; N/R/C = no state / absolute / relative) found:
+- **Robot-init 0.1:** R−N = −20, C−N = −22, C−R = −2 (n.s.).
+- **Layout 6 cm:** R−N = +11, C−N = +18.
+
+Robot-init and layout shifts therefore push state effects in **opposite directions**, and pooling them into one K contrast could cancel the decisive signal. Changes, made before any GPU run:
+
+1. **K is split.** Each primary contrast is estimated separately as **RK-robot, CK-robot, RK-layout and CK-layout**, giving 6 primary contrasts with RF and CF, under Holm over 6. Predictions:
+
+   | Contrast | H6 | H7 | Simulation analogue |
+   |---|---|---|---|
+   | RK-robot | hurt | hurt | hurt (−20) |
+   | CK-robot | hurt | **help** | hurt (−22) |
+   | RK-layout | hurt | hurt | null/help (+11) |
+   | CK-layout | hurt | help | help (+18) |
+
+   H6 vs H7 is decided by **CK-robot vs RK-robot**: H7 needs C to remove the robot-init harm. **Harm in RK-layout** is read as vision suppression by state, since with good perception the analogue shows no harm.
+2. **Primary magnitudes:** robot-init 0.1 rad (0.2 secondary); layout 6 cm (3 cm secondary, because blind replay already solves 30–44% at 3 cm against 3–7% at 6 cm).
+3. **A blind floor is reported per condition.** The blind-A and blind-T policies run on the same instances (`pilot/sim/blind_*`), so a π0.5 arm can be checked against "no better than replay".
+
+The planner decision table in §4 was computed for the pooled K. Recompute it for the split contrasts before Stage 1.
+
 ## 4. Analysis (fixed before running)
 
 **Unit.** The trained policy (arm × seed). With 400 paired instances per condition, binomial error is about 2 pp. Between-seed variation dominates (§5).
 
-**Estimates.** For each primary contrast, the difference in mean success between the arm and N, averaged over seeds. K pools K-robot and K-layout with equal weight per sub-condition. Sub-conditions and magnitudes are reported separately as secondary results (dose–response).
+**Estimates.** For each primary contrast, the difference in mean success between the arm and N, averaged over seeds. K-robot and K-layout are **not pooled** (§3a); each is a primary contrast at its primary magnitude (robot-init 0.1, layout 0.06). The other magnitudes are secondary (dose–response).
 
 **Confidence intervals.** 95% two-level cluster bootstrap: resample seeds within each arm, then tasks within each suite, 10,000 replicates. Exact McNemar per seed on the paired episodes is secondary.
 

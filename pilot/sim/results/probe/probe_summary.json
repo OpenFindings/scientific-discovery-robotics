@@ -1,0 +1,205 @@
+{
+ "n_rows": 2400,
+ "start_states": {
+  "id": {
+   "n": 400,
+   "R_share_start_vectors_outside_q01_q99": 0.0,
+   "R_share_dims_saturated_or_below": 0.0,
+   "C_start_inside": false
+  },
+  "layout:0.03": {
+   "n": 366,
+   "R_share_start_vectors_outside_q01_q99": 0.0,
+   "R_share_dims_saturated_or_below": 0.0,
+   "C_start_inside": false,
+   "eef_start_displacement_mm_vs_id": {
+    "median": 4.3,
+    "p90": 7.0,
+    "max": 13.0
+   }
+  },
+  "layout:0.06": {
+   "n": 357,
+   "R_share_start_vectors_outside_q01_q99": 0.0,
+   "R_share_dims_saturated_or_below": 0.0,
+   "C_start_inside": false,
+   "eef_start_displacement_mm_vs_id": {
+    "median": 4.4,
+    "p90": 7.0,
+    "max": 12.9
+   }
+  },
+  "robot_init:0.1": {
+   "n": 400,
+   "R_share_start_vectors_outside_q01_q99": 0.0,
+   "R_share_dims_saturated_or_below": 0.0,
+   "C_start_inside": false,
+   "eef_start_displacement_mm_vs_id": {
+    "median": 35.4,
+    "p90": 55.8,
+    "max": 67.2
+   }
+  },
+  "robot_init:0.2": {
+   "n": 400,
+   "R_share_start_vectors_outside_q01_q99": 0.025,
+   "R_share_dims_saturated_or_below": 0.004,
+   "C_start_inside": false,
+   "eef_start_displacement_mm_vs_id": {
+    "median": 70.3,
+    "p90": 105.4,
+    "max": 135.8
+   }
+  },
+  "robot_init:0.3": {
+   "n": 400,
+   "R_share_start_vectors_outside_q01_q99": 0.14,
+   "R_share_dims_saturated_or_below": 0.02,
+   "C_start_inside": false,
+   "eef_start_displacement_mm_vs_id": {
+    "median": 102.8,
+    "p90": 158.9,
+    "max": 203.5
+   }
+  }
+ },
+ "robot_init_clipped_share": 0.0,
+ "layout": {
+  "layout:0.03": {
+   "libero_10": {
+    "n": 100,
+    "valid": 100,
+    "skipped_no_target": 0,
+    "skipped_no_valid_placement": 0,
+    "mean_tries_valid": 1.01,
+    "solved_at_start": 0,
+    "targets": [
+     "akita_black_bowl_1",
+     "alphabet_soup_1",
+     "black_book_1",
+     "cream_cheese_1",
+     "moka_pot_1",
+     "plate_1",
+     "white_yellow_mug_1"
+    ]
+   },
+   "libero_goal": {
+    "n": 100,
+    "valid": 80,
+    "skipped_no_target": 20,
+    "skipped_no_valid_placement": 0,
+    "mean_tries_valid": 1.06,
+    "solved_at_start": 0,
+    "targets": [
+     "akita_black_bowl_1",
+     "cream_cheese_1",
+     "plate_1",
+     "wine_bottle_1"
+    ]
+   },
+   "libero_object": {
+    "n": 100,
+    "valid": 100,
+    "skipped_no_target": 0,
+    "skipped_no_valid_placement": 0,
+    "mean_tries_valid": 1.0,
+    "solved_at_start": 0,
+    "targets": [
+     "alphabet_soup_1",
+     "bbq_sauce_1",
+     "butter_1",
+     "chocolate_pudding_1",
+     "cream_cheese_1",
+     "ketchup_1",
+     "milk_1",
+     "orange_juice_1",
+     "salad_dressing_1",
+     "tomato_sauce_1"
+    ]
+   },
+   "libero_spatial": {
+    "n": 100,
+    "valid": 86,
+    "skipped_no_target": 0,
+    "skipped_no_valid_placement": 14,
+    "mean_tries_valid": 1.2,
+    "solved_at_start": 0,
+    "targets": [
+     "akita_black_bowl_1"
+    ]
+   }
+  },
+  "layout:0.06": {
+   "libero_10": {
+    "n": 100,
+    "valid": 100,
+    "skipped_no_target": 0,
+    "skipped_no_valid_placement": 0,
+    "mean_tries_valid": 1.07,
+    "solved_at_start": 0,
+    "targets": [
+     "akita_black_bowl_1",
+     "alphabet_soup_1",
+     "black_book_1",
+     "cream_cheese_1",
+     "moka_pot_1",
+     "plate_1",
+     "white_yellow_mug_1"
+    ]
+   },
+   "libero_goal": {
+    "n": 100,
+    "valid": 80,
+    "skipped_no_target": 20,
+    "skipped_no_valid_placement": 0,
+    "mean_tries_valid": 1.43,
+    "solved_at_start": 0,
+    "targets": [
+     "akita_black_bowl_1",
+     "cream_cheese_1",
+     "plate_1",
+     "wine_bottle_1"
+    ]
+   },
+   "libero_object": {
+    "n": 100,
+    "valid": 100,
+    "skipped_no_target": 0,
+    "skipped_no_valid_placement": 0,
+    "mean_tries_valid": 1.05,
+    "solved_at_start": 0,
+    "targets": [
+     "alphabet_soup_1",
+     "bbq_sauce_1",
+     "butter_1",
+     "chocolate_pudding_1",
+     "cream_cheese_1",
+     "ketchup_1",
+     "milk_1",
+     "orange_juice_1",
+     "salad_dressing_1",
+     "tomato_sauce_1"
+    ]
+   },
+   "libero_spatial": {
+    "n": 100,
+    "valid": 77,
+    "skipped_no_target": 0,
+    "skipped_no_valid_placement": 23,
+    "mean_tries_valid": 1.65,
+    "solved_at_start": 0,
+    "targets": [
+     "akita_black_bowl_1"
+    ]
+   }
+  }
+ },
+ "solved_at_start_any": {
+  "id": 0,
+  "layout:0.03": 0,
+  "layout:0.06": 0,
+  "robot_init:0.1": 0,
+  "robot_init:0.2": 0,
+  "robot_init:0.3": 0
+ }
+}

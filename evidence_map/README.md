@@ -219,6 +219,14 @@ Outputs are in `results/single_variable_test.json`, `results/planner_output.json
   - The corrected-frame-under-shift evidence is three papers.
   - A real-robot camera-fault result, or any second camera-fault paper, is the cheapest way to strengthen the map.
 
+## 6. Simulation analogue (not literature evidence; kept out of `results.jsonl`)
+
+`research/sim_findings_cpu_libero.md` ran the pilot's shifts in real LIBERO with small blind and oracle-perception policies. The ego-centric oracle (perfect wrist-camera-like object offsets) shows two things:
+- **Robot-initial-state shift:** state hurts (−20 pp), and the episode-relative frame does not fix it (−22 pp).
+- **6 cm object-layout shift:** state helps (+11 / +18 pp).
+
+That splits "configuration shift" into two sub-types with opposite expected signs. Published harm under object-position shifts would then reflect imperfect visual grounding (vision suppression) rather than state per se. A blind MLP with absolute state solves 71.5% of in-distribution LIBERO, which supports treating in-distribution results as uninformative.
+
 ## Caveats
 
 - The settings were coded by one reader (Claude), from paper tables. No second coder checked them.

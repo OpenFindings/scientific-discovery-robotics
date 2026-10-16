@@ -1,0 +1,127 @@
+{
+ "pass_": true,
+ "checks": {
+  "systematic_pos": true,
+  "systematic_rot": true,
+  "coverage": true,
+  "all_tasks_matched": true,
+  "pairing": true
+ },
+ "thresholds": {
+  "mean_offset_mm": 5.0,
+  "mean_offset_deg": 1.0,
+  "share_inside": 0.95,
+  "inside_tol_mm": 2.0,
+  "inside_tol_deg": 0.5,
+  "pairing_mm": 0.1
+ },
+ "n_eval_instances": 400,
+ "n_unmatched_tasks": 0,
+ "n_train_episodes": 1693,
+ "systematic": {
+  "mean_offset_mm": [
+   -4.54,
+   -0.22,
+   0.45
+  ],
+  "mean_offset_rotvec_deg": [
+   0.009,
+   0.082,
+   -0.001
+  ],
+  "in_C_state_bins": [
+   1.22,
+   0.05,
+   0.16,
+   0.01,
+   0.15,
+   0.0
+  ]
+ },
+ "coverage": {
+  "share_inside": 0.9925,
+  "dist_mm_median": 13.187544702314586,
+  "outside": [
+   {
+    "suite": "libero_10",
+    "task_id": 7,
+    "init": 9,
+    "task": "put both the alphabet soup and the cream cheese box in the basket",
+    "n_train_demos": 43,
+    "offset_mm": [
+     -17.69,
+     10.67,
+     -18.9
+    ],
+    "offset_rotvec_deg": [
+     0.02,
+     -0.069,
+     -0.075
+    ],
+    "dist_mm": 28.005291830091277,
+    "deg": 0.1044582949070695,
+    "limit_mm": 27.79414779143892,
+    "limit_deg": 0.8583141978783569,
+    "inside": false,
+    "gripper_open_diff_mm": 0.07800000000000168
+   },
+   {
+    "suite": "libero_goal",
+    "task_id": 5,
+    "init": 8,
+    "task": "push the plate to the front of the stove",
+    "n_train_demos": 33,
+    "offset_mm": [
+     8.5,
+     3.48,
+     29.95
+    ],
+    "offset_rotvec_deg": [
+     0.024,
+     0.356,
+     -0.049
+    ],
+    "dist_mm": 31.327721237692558,
+    "deg": 0.3598057275992489,
+    "limit_mm": 27.79414779143892,
+    "limit_deg": 0.8583141978783569,
+    "inside": false,
+    "gripper_open_diff_mm": 0.07800000000000168
+   },
+   {
+    "suite": "libero_object",
+    "task_id": 7,
+    "init": 2,
+    "task": "pick up the milk and place it in the basket",
+    "n_train_demos": 45,
+    "offset_mm": [
+     -9.86,
+     34.35,
+     6.6
+    ],
+    "offset_rotvec_deg": [
+     -0.008,
+     0.148,
+     -0.181
+    ],
+    "dist_mm": 36.34307801608622,
+    "deg": 0.23368420290690362,
+    "limit_mm": 27.79414779143892,
+    "limit_deg": 0.8583141978783569,
+    "inside": false,
+    "gripper_open_diff_mm": 0.07900000000000268
+   }
+  ]
+ },
+ "unmatched_tasks": [],
+ "pairing_max_mm": 0.0,
+ "train_clouds": {
+  "tasks": 40,
+  "coverage_limit_mm": 27.79,
+  "coverage_limit_deg": 0.858,
+  "max_mm_median": 23.788507426076734,
+  "max_mm_max": 35.70738584828068,
+  "max_deg_max": 0.6653538675978391,
+  "demos_per_task_min": 29
+ }
+}
