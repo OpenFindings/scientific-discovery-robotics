@@ -37,6 +37,7 @@ import dataclasses
 import json
 import logging
 import math
+import os
 import pathlib
 import time
 import zlib
@@ -134,13 +135,36 @@ def perturb_robot_init(env, magnitude: float, rng: np.random.Generator) -> dict:
                 clipped=bool(np.any(q1 != q0 + magnitude * u)), offset=(q1 - q0).round(5).tolist())
 
 
+def _safe_reset(env, max_tries=20):
+    """env.reset() without LIBERO's trap: ControlEnv.reset retries in a `while` loop whose
+    `finally: continue` swallows EVERY exception, so any reset error (e.g. 'too many open files'
+    from mujoco 3.1.x, which leaks ~50 mesh-file descriptors per hard reset; openpi pins 3.2.3,
+    which does not) becomes a silent infinite loop. Retry only robosuite's RandomizationError."""
+    inner = getattr(env, "env", None)
+    reset = inner.reset if inner is not None and hasattr(inner, "reset") else env.reset
+    for _ in range(max_tries):
+        try:
+            return reset()
+        except Exception as e:  # noqa: BLE001
+            if type(e).__name__ != "RandomizationError":
+                raise
+    raise RuntimeError(f"env reset failed {max_tries} times (RandomizationError)")
+
+
+def _open_fds():
+    try:
+        return len(os.listdir("/proc/self/fd"))
+    except OSError:
+        return None
+
+
 def _preprocess(img, size):
     img = np.ascontiguousarray(img[::-1, ::-1])  # rotate 180 deg to match training data
     return image_tools.convert_to_uint8(image_tools.resize_with_pad(img, size, size))
 
 
 def run_episode(env, client, task_description, init_state, cond, inst, args, max_steps):
-    env.reset()
+    _safe_reset(env)
     obs = env.set_init_state(init_state)
     rec = dict(perturbation=None, fault_onset=None, closure_step=None)
     if cond.startswith("robot_init:"):
@@ -193,7 +217,7 @@ def run_episode(env, client, task_description, init_state, cond, inst, args, max
             rec["closure_step"] = t
             rec["fault_onset"] = t + delay
     rec.update(success=bool(done), steps=t, prompt=prompt, start_state=start_state.round(5).tolist(),
-               states=states, state_mode=args.state_mode)
+               states=states, state_mode=args.state_mode, open_fds=_open_fds())
     return rec, frames
 
 

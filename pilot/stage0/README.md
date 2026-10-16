@@ -22,7 +22,7 @@ Written against openpi @ `215abfb` (2026-08-24) and LIBERO-plus @ `4976dc3`. **N
 | `layout_perturb.py` | LIBERO client venv (Py 3.8) | Stage 1 K-layout: moves the task's first movable object of interest exactly `m` metres in a random direction on the LIBERO init state. It checks the placement over a 10-step settle (no object pushed more than 10 mm, no drop over 30 mm, no tilt over 15°, task not already solved), retries up to 8 deterministic directions, and restores the validated state exactly. Instances with no movable target or no valid placement are logged as `skipped`. |
 | `analyze_stage0.py` | any Python with numpy | Reports success tables and checks 1, 2, 3 and 5, plus a prompt-flag check. Gives the seed SD, the Stage 1 seed recommendation, and the share of R's state tokens that are saturated or out of range. |
 | `stage0.sh` | shell | Orchestrates the steps: `norm_stats train eval anchors reference probe analyze` (plus `convert` for arm C). |
-| `test_stage0_offline.py` | any Python with numpy (+ pyarrow for the converter test) | 20 offline tests. |
+| `test_stage0_offline.py` | any Python with numpy (+ pyarrow for the converter test) | 21 offline tests. |
 
 ## Choices worth knowing
 
@@ -31,6 +31,14 @@ Written against openpi @ `215abfb` (2026-08-24) and LIBERO-plus @ `4976dc3`. **N
 - **Faults** follow Blackout vs Freeze App. A.2. Blackout zeroes the preprocessed image. The after-closure wrist fault triggers when finger width stays below 0.020 m for 3 policy steps, then waits U{0..10} steps.
 - **The checkpoint evaluated is `…/9999`.** openpi saves the final step as `num_train_steps − 1`, and the saved params are the EMA weights.
 - **Check 5 was relaxed** from "N within 10–90%" to "N and R not both at floor or both at ceiling". Blackout vs Freeze's no-state π0.5 sits at 9.1% under scene blackout, so the original rule would fail by design.
+
+## Simulator pitfalls found by running LIBERO here (CPU, MuJoCo)
+
+- **Pin `mujoco>=3.2.3`.** This is openpi's own pin in `examples/libero/requirements.txt`. With mujoco 3.1.6, every hard `env.reset()` leaks about 50 file descriptors (the Panda visual meshes), measured over 20 resets: +50/reset on 3.1.6, +0 on 3.2.3. That exhausts the descriptor limit after a few hundred episodes.
+- **LIBERO's `ControlEnv.reset()` can hang silently.** It retries inside `while … try … finally: continue`, and the `finally: continue` swallows every exception. Any reset failure, such as "too many open files", becomes a silent infinite loop. Four probe processes stalled this way, all at the same reset count.
+
+  `eval_libero.py` now resets through `_safe_reset()`, which retries only robosuite's `RandomizationError` (up to 20 times) and raises everything else. Each episode row also logs `open_fds`, so a leak is visible in the data.
+- **Objects fall about 7 cm during the 10 settle steps** from LIBERO init states, even with no perturbation. Layout placements are therefore validated against an unperturbed settle, not against the placement pose (see `layout_perturb.py`).
 
 ## K-layout notes (Stage 1)
 

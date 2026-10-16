@@ -521,6 +521,28 @@ def test_analysis_drops_skipped_layout_rows():
     assert rep["checks"]["3_config_shift_bites"]["R_minus_N"]["layout:0.06"]["diff_pp"] < -3
 
 
+def test_safe_reset_retries_randomization_only():
+    class RandomizationError(Exception):
+        pass
+    calls = []
+    inner = types.SimpleNamespace()
+    def flaky():
+        calls.append(1)
+        if len(calls) < 3:
+            raise RandomizationError("placement")
+        return "ok"
+    inner.reset = flaky
+    assert ev._safe_reset(types.SimpleNamespace(env=inner)) == "ok" and len(calls) == 3
+    def broken():
+        raise OSError(24, "Too many open files")
+    inner.reset = broken
+    try:
+        ev._safe_reset(types.SimpleNamespace(env=inner))
+        raise AssertionError("should have raised")
+    except OSError:
+        pass
+
+
 if __name__ == "__main__":
     fails = 0
     for name, fn in sorted(globals().items()):

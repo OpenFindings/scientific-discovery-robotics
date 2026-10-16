@@ -20,13 +20,19 @@ long-horizon tasks; the moved object is logged. Two LIBERO-Goal tasks ("open
 the middle drawer of the cabinet", "turn on the stove") have only fixtures of
 interest; they are logged as not applicable and skipped.
 
-Validity (else the next deterministic direction is tried, up to 8 tries; the
-k-th try rotates the direction by k golden angles):
-  * during the 10-step settle, no movable object shifts more than 10 mm
-    horizontally (an overlap would push objects apart), the moved object does
-    not drop more than 30 mm (fell off an edge or into something) and does not
-    tilt more than 15 degrees;
-  * the task is not already solved after settling.
+Validity is judged against the UNPERTURBED settle, because LIBERO init states
+leave objects a few cm above their resting height and they fall during the 10
+settle steps anyway (measured: ~70 mm for the LIBERO-Spatial bowl). The base
+state is settled once; each try is settled the same way and must end with
+  * the moved object within 10 mm (xy) of its baseline rest + the offset, within
+    10 mm of its baseline rest height (not on top of something, not off an
+    edge), and within 8 degrees of its baseline orientation (a first MuJoCo run
+    with 15 mm / 15 deg accepted bowls leaning on a plate rim at 10-13 deg);
+  * every other movable object within 10 mm (xy) / 10 mm (z) of its baseline rest
+    (an overlap would push it away);
+  * the task not already solved.
+Otherwise the next deterministic direction is tried, up to 8 tries; the k-th try
+rotates the direction by k golden angles.
 The validated placement is restored exactly (env.set_init_state on the saved
 MuJoCo state), so the episode's own settle steps replay the same physics.
 
@@ -39,7 +45,7 @@ import numpy as np
 GOLDEN = math.pi * (3 - math.sqrt(5))  # ~137.5 deg: successive tries spread around the circle
 MAX_TRIES = 8
 SETTLE_STEPS = 10
-TOL_XY_M, TOL_DROP_M, TOL_TILT_DEG = 0.010, 0.030, 15.0
+TOL_XY_M, TOL_Z_M, TOL_TILT_DEG = 0.010, 0.010, 8.0
 
 
 def movable_target(renv):
@@ -63,6 +69,12 @@ def _tilt_deg(q_before, q_after):
     return math.degrees(2 * math.acos(min(1.0, d)))
 
 
+def _settle(env, dummy_action, renv, joints):
+    for _ in range(SETTLE_STEPS):
+        env.step(dummy_action)
+    return _poses(renv, joints)
+
+
 def perturb_layout(env, magnitude_m, rng, dummy_action):
     """Returns (obs, record). obs is None when the episode must be skipped."""
     renv = env.env
@@ -75,6 +87,7 @@ def perturb_layout(env, magnitude_m, rng, dummy_action):
     base = env.get_sim_state()
     q0 = np.array(renv.sim.data.get_joint_qpos(jn), dtype=np.float64)
     phi0 = float(rng.uniform(0, 2 * math.pi))
+    rest = _settle(env, dummy_action, renv, joints)  # unperturbed rest poses
     tries = []
     for k in range(MAX_TRIES):
         phi = phi0 + k * GOLDEN
@@ -84,19 +97,19 @@ def perturb_layout(env, magnitude_m, rng, dummy_action):
         renv.sim.data.set_joint_qpos(jn, q)
         renv.sim.forward()
         placed = env.get_sim_state()
-        before = _poses(renv, joints)
-        for _ in range(SETTLE_STEPS):
-            env.step(dummy_action)
-        after = _poses(renv, joints)
-        shift = {n: float(np.linalg.norm(after[n][:2] - before[n][:2])) for n in joints}
-        drop = float(before[target][2] - after[target][2])
-        tilt = _tilt_deg(before[target][3:7], after[target][3:7])
+        after = _settle(env, dummy_action, renv, joints)
+        offset = q[:2] - q0[:2]
+        expect = {n: rest[n][:2] + (offset if n == target else 0.0) for n in joints}
+        shift = {n: float(np.linalg.norm(after[n][:2] - expect[n])) for n in joints}
+        dz = {n: float(abs(after[n][2] - rest[n][2])) for n in joints}
+        tilt = _tilt_deg(rest[target][3:7], after[target][3:7])
         solved = bool(env.check_success())
         worst = max(shift, key=shift.get)
-        ok = shift[worst] <= TOL_XY_M and drop <= TOL_DROP_M and tilt <= TOL_TILT_DEG and not solved
-        tries.append(dict(direction_rad=round(phi % (2 * math.pi), 4), max_settle_shift_mm=round(1000 * shift[worst], 2),
-                          most_moved=worst, drop_mm=round(1000 * drop, 2), tilt_deg=round(tilt, 2), solved=solved,
-                          ok=ok))
+        worst_z = max(dz, key=dz.get)
+        ok = (shift[worst] <= TOL_XY_M and dz[worst_z] <= TOL_Z_M and tilt <= TOL_TILT_DEG and not solved)
+        tries.append(dict(direction_rad=round(phi % (2 * math.pi), 4), max_xy_dev_mm=round(1000 * shift[worst], 2),
+                          most_moved=worst, max_z_dev_mm=round(1000 * dz[worst_z], 2), z_worst=worst_z,
+                          tilt_deg=round(tilt, 2), solved=solved, ok=ok))
         if ok:
             obs = env.set_init_state(placed)
             return obs, dict(kind="layout", applicable=True, valid=True, target=target, requested_m=magnitude_m,
