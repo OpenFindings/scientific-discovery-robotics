@@ -1,0 +1,37 @@
+pixtrain N 0
+pixtrain R 0
+pixtrain C 0
+blindeval libero_spatial 1 id,robot_init:0.1,layout:0.06 libero_spatial_s1
+blindeval libero_object 1 id,robot_init:0.1,layout:0.06 libero_object_s1
+blindeval libero_goal 1 id,robot_init:0.1,layout:0.06 libero_goal_s1
+blindeval libero_10 1 id,robot_init:0.1,layout:0.06 libero_10_s1
+pixtrain N 1
+pixtrain R 1
+pixtrain C 1
+egoeval libero_spatial 1
+egoeval libero_spatial 2
+egoeval libero_object 1
+egoeval libero_object 2
+pixeval libero_spatial 0 0-4
+pixeval libero_spatial 0 5-9
+pixeval libero_object 0 0-4
+pixeval libero_object 0 5-9
+blindeval libero_spatial 2 id,robot_init:0.1,layout:0.06 libero_spatial_s2
+blindeval libero_spatial 0 layout:0.06 libero_spatial_s0_layoutfix
+blindeval libero_object 2 id,robot_init:0.1,layout:0.06 libero_object_s2
+blindeval libero_object 0 layout:0.06 libero_object_s0_layoutfix
+blindeval libero_goal 2 id,robot_init:0.1,layout:0.06 libero_goal_s2
+blindeval libero_goal 0 layout:0.06 libero_goal_s0_layoutfix
+blindeval libero_10 2 id,robot_init:0.1,layout:0.06 libero_10_s2
+blindeval libero_10 0 layout:0.06 libero_10_s0_layoutfix
+pixtrain N 2
+pixtrain R 2
+pixtrain C 2
+pixeval libero_spatial 1 0-4
+pixeval libero_spatial 1 5-9
+pixeval libero_object 1 0-4
+pixeval libero_object 1 5-9
+pixeval libero_spatial 2 0-4
+pixeval libero_spatial 2 5-9
+pixeval libero_object 2 0-4
+pixeval libero_object 2 5-9

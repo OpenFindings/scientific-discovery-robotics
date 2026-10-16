@@ -16,6 +16,9 @@ conds = sys.argv[4].split(",")
 inits = ev._range(sys.argv[5]) if len(sys.argv) > 5 else list(range(5))
 policies = sys.argv[6].split(",") if len(sys.argv) > 6 else ["T", "A", "Rl"]
 torch.set_num_threads(1)
+import os
+SEED = int(os.environ.get('SEED', '0'))
+SUF = '' if SEED == 0 else f'_s{SEED}'
 
 
 def norm_task(s):
@@ -41,7 +44,7 @@ class Blind:
         return (y * ck["ysd"] + ck["ymu"]).reshape(ck["H"], 7)
 
 
-models = {p: Blind(f"{model_dir}/blind_{p}.pt") for p in policies}
+models = {p: Blind(f"{model_dir}/blind_{p}{SUF}.pt") for p in policies}
 suite = benchmark.get_benchmark_dict()[suite_name]()
 t0 = time.time()
 done_keys = set()
@@ -68,7 +71,8 @@ with out.open("a") as fh:
                     if cond.startswith("robot_init:"):
                         pert = ev.perturb_robot_init(env, float(cond.split(":")[1]), ev._rng(*inst, cond, "dir"))
                     if cond.startswith("layout:"):
-                        obs, pert = perturb_layout(env, float(cond.split(":")[1]), ev._rng(*inst, cond, "dir"), ev.LIBERO_DUMMY_ACTION)
+                        obs, pert = perturb_layout(env, float(cond.split(":")[1]), ev._rng(*inst, cond, "dir"), ev.LIBERO_DUMMY_ACTION,
+                                                   reset_fn=lambda: ev._safe_reset(env))
                         if obs is None:
                             fh.write(json.dumps(dict(policy=pol, suite=suite_name, task=task_id, init=init, condition=cond, skipped=True)) + "\n")
                             continue

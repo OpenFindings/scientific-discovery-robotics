@@ -12,6 +12,9 @@ from libero.libero.envs.env_wrapper import ControlEnv
 suite_name, model_dir, out = sys.argv[1], sys.argv[2], pathlib.Path(sys.argv[3])
 conds = sys.argv[4].split(","); inits = ev._range(sys.argv[5]); policies = sys.argv[6].split(",")
 torch.set_num_threads(1)
+import os
+SEED = int(os.environ.get('SEED', '0'))
+SUF = '' if SEED == 0 else f'_s{SEED}'
 def norm_task(s): return re.sub(r"\s+", " ", s.strip().lower()).rstrip(".")
 class Pol:
     def __init__(s, p):
@@ -25,7 +28,7 @@ class Pol:
         oh = np.zeros(len(c["tasks"])); oh[c["tasks"].index(task)] = 1
         with torch.no_grad(): y = s.net(torch.tensor(np.r_[x, oh], dtype=torch.float32)[None])[0].numpy()
         return (y * c["ysd"] + c["ymu"]).reshape(c["H"], 7)
-models = {p: Pol(f"{model_dir}/ego_{p}.pt") for p in policies}
+models = {p: Pol(f"{model_dir}/ego_{p}{SUF}.pt") for p in policies}
 suite = benchmark.get_benchmark_dict()[suite_name]()
 done_keys = set()
 if out.exists():

@@ -4,7 +4,10 @@ import glob, re, sys
 import numpy as np, torch
 sys.path.insert(0, "/home/user/scientific-discovery-robotics/pilot/stage0")
 from relative_state import to_relative
-torch.manual_seed(0)
+import os
+SEED = int(os.environ.get('SEED', '0'))
+torch.manual_seed(SEED)
+SUF = '' if SEED == 0 else f'_s{SEED}'
 files, out_dir = sorted(glob.glob(sys.argv[1])), sys.argv[2]
 H = 10
 def norm_task(s): return re.sub(r"\s+", " ", s.strip().lower()).rstrip(".")
@@ -47,5 +50,5 @@ for name, F in feats.items():
         opt.zero_grad(); loss.backward(); opt.step(); sch.step()
         if step % 5000 == 0 or step == steps - 1: print(name, step, round(loss.item(), 4), flush=True)
     torch.save(dict(state=net.state_dict(), xmu=xmu, xsd=xsd, ymu=ymu, ysd=ysd, tasks=tasks, H=H, in_dim=X.shape[1],
-                    n_obj=6), f"{out_dir}/ego_{name}.pt")
+                    n_obj=6), f"{out_dir}/ego_{name}{SUF}.pt")
 print("saved", flush=True)
