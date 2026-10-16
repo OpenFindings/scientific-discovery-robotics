@@ -31,7 +31,7 @@ arms:
     state: none
     discrete_state_input: false
   R:  # raw state, as in the openpi LIBERO recipe
-    state: absolute       # [eef_pos(3), eef_axis_angle(3), gripper_qpos(2)], base frame
+    state: absolute       # [eef_pos(3), eef_axis_angle(3), gripper_qpos(2)], world frame
     discrete_state_input: true   # "State: b1..b8;" 256 bins after quantile norm (no clipping)
     fusion: naive
   C:  # corrected state

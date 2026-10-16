@@ -1,10 +1,10 @@
 """Arm C state encoding: LIBERO state relative to the episode's first state.
 
 LIBERO state (openpi / OpenVLA layout, 8-D):
-  [eef_pos(3), eef_axis_angle(3), gripper_qpos(2)]   robot base frame
+  [eef_pos(3), eef_axis_angle(3), gripper_qpos(2)]   world frame (robosuite robot0_eef_*)
 
 Episode-relative state (pilot design, section 2.1):
-  pos_t - pos_0                    translation since the start, base frame
+  pos_t - pos_0                    translation since the start, world-frame axes
   axis_angle(R_0^T R_t)            rotation since the start, in the start EEF frame
   gripper_qpos_t                   unchanged (absolute)
 

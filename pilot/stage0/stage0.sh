@@ -9,7 +9,7 @@
 #   - MUJOCO_GL=egl (or glx) works on this machine
 #
 # Usage:  OPENPI_ROOT=~/openpi bash stage0.sh [step ...]
-#   steps: norm_stats train eval reference probe analyze   (default: all, in order)
+#   steps: norm_stats train eval anchors reference probe analyze   (default: all, in order)
 #   arm C (Stage 1): ARMS="C" bash stage0.sh convert norm_stats train eval analyze
 set -euo pipefail
 
@@ -77,6 +77,14 @@ step_eval() {
   done; done
 }
 
+step_anchors() { # arm C gate: eval start states vs training frame-0 anchors (any arm's logs will do)
+  local src="${HF_LEROBOT_HOME:-$HOME/.cache/huggingface/lerobot}/physical-intelligence/libero"
+  local from=(--hf physical-intelligence/libero)
+  [ -f "$src/meta/info.json" ] && from=(--dataset "$src")
+  uv run python "$PILOT/check_anchors.py" "$OUT"/*.jsonl "${from[@]}" --out "$OUT/anchor_check.json" \
+    | tail -n 40 || echo "ANCHOR CHECK FAILED - see $OUT/anchor_check.json before training arm C"
+}
+
 step_reference() { # released pi05_libero = stock config, no state (reference for arm N)
   export PYTHONPATH="${PYTHONPATH:-}:$OPENPI_ROOT/third_party/libero"
   srv pi05_libero gs://openpi-assets/checkpoints/pi05_libero
@@ -100,6 +108,6 @@ step_analyze() {
     --out "$OUT/summary.json" | tail -n 60
 }
 
-for step in "${@:-norm_stats train eval reference probe analyze}"; do
+for step in "${@:-norm_stats train eval anchors reference probe analyze}"; do
   for s in $step; do "step_$s"; done
 done

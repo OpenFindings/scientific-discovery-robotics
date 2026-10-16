@@ -15,12 +15,13 @@ Written against openpi @ `215abfb` (2026-08-24) and LIBERO-plus @ `4976dc3`. **N
 | `openpi_ext.py` | openpi env | Registers `pilot_N`, `pilot_R`, `pilot_C` and `pilot_base_probe` into openpi's config registry. `pilot_C` reads `local/libero_relstate`. Each is stock `pi05_libero` with the Blackout-vs-Freeze sim recipe: 10k updates, batch 32, 10k linear warmup to 5e-5, EMA 0.999. Only `discrete_state_input` differs between arms. |
 | `relative_state.py` | both envs (numpy only, Py 3.8+) | Arm C encoding: `pos − pos₀`, `axis_angle(R₀ᵀ R)`, gripper absolute. One function serves both the training conversion and the eval client, so the two cannot drift apart. |
 | `convert_relative_state.py` | openpi env | Copies `physical-intelligence/libero` (LeRobot v2.0) to `$HF_LEROBOT_HOME/local/libero_relstate`, rewriting only the `state` column. Image bytes, actions, indices and HF schema metadata are copied unchanged. Before writing each episode it checks frame 0 = 0 and the absolute state round-trips. It updates `meta/stats.json` and writes a manifest of per-episode anchors. Needs ~30 GB. |
+| `check_anchors.py` | numpy + pyarrow | Arm C gate. Compares each unperturbed eval episode's logged `start_state` with the frame-0 states of that task's training demos. Reports the **systematic** mean offset (mm, degrees, and C state-token bins), **coverage** (share of eval starts inside the training-anchor cloud), and **pairing** (the same instance starts identically across arms and seeds). Reads anchors from a local dataset or straight from Hugging Face via HTTP range requests, so it runs in Stage 0 before the 30 GB conversion. |
 | `run_openpi.py` | openpi env | Runs openpi's `train.py` / `compute_norm_stats.py` with those configs registered. `describe` prints the settings that must match the design. |
 | `serve.py` | openpi env | Websocket policy server. On request, it returns the **decoded prompt** the model actually saw, so a train/serve flag mismatch is logged. `--norm-stats-from` supplies LIBERO stats for `pi05_base`. |
 | `eval_libero.py` | LIBERO client venv (Py 3.8) | Runs paired instances (suite × task × init state) under each condition and writes one JSON line per episode: success, steps, prompt, per-query state, perturbation and fault timing. Supports `id`, `scene_blackout`, `wrist_blackout_after_close` and `robot_init:<m>`. `--state-mode relative` (arm C) sends the state relative to the first policy query. |
 | `analyze_stage0.py` | any Python with numpy | Reports success tables and checks 1, 2, 3 and 5, plus a prompt-flag check. Gives the seed SD, the Stage 1 seed recommendation, and the share of R's state tokens that are saturated or out of range. |
-| `stage0.sh` | shell | Orchestrates the steps: `norm_stats train eval reference probe analyze`. |
-| `test_stage0_offline.py` | any Python with numpy (+ pyarrow for the converter test) | 15 offline tests. |
+| `stage0.sh` | shell | Orchestrates the steps: `norm_stats train eval anchors reference probe analyze` (plus `convert` for arm C). |
+| `test_stage0_offline.py` | any Python with numpy (+ pyarrow for the converter test) | 16 offline tests. |
 
 ## Choices worth knowing
 
@@ -32,9 +33,23 @@ Written against openpi @ `215abfb` (2026-08-24) and LIBERO-plus @ `4976dc3`. **N
 
 ## Arm C notes
 
-- **Anchors.** The training anchor is the dataset's frame 0. The eval anchor is the state at the first policy query, after the 10 settle steps; the arm is held still there, so the two should agree to within millimetres.
+- **Anchors.** The training anchor is the dataset's frame 0. The eval anchor is the state at the first policy query, after the 10 settle steps. `check_anchors.py` (the `anchors` step) tests whether they line up.
 
-  To verify, compare `start_state` in the ID episodes against `pilot_relstate_manifest.json` before Stage 1. The manifest lists anchors per episode file; tasks map through `meta/episodes.jsonl`.
+  A sample of 212 real training episodes (every 8th, read over HTTP) showed:
+  - **Position is in the world frame, not the robot base frame.** Anchors form two clusters about 0.9 m apart, one per scene layout. Compare within task only.
+    - Arm R's absolute state therefore also identifies the scene layout.
+  - **Frame-0 positions vary within a task** by up to 17–28 mm (about 10 mm per axis typically, mostly in a plane).
+  - **Orientation and gripper barely vary**: orientation by less than 0.5°, and the gripper is always fully open.
+
+  So the pre-set rule tests a *systematic* offset rather than equality:
+  - mean offset ≤ 5 mm per axis and ≤ 1°;
+  - ≥ 95% of eval starts inside the pooled within-task 99th-percentile cloud (+2 mm, +0.5°);
+  - every task matched;
+  - same-instance starts identical across arms and seeds to 0.1 mm.
+
+  Validated on the real anchors by holding out half the sampled episodes as pseudo-eval starts. The mean offset was 0.5 mm and passed; an injected 10 mm shift failed (3.5 C-state bins).
+
+  Coverage in that test was only 91%. The half-sample had just 2–3 demos per task, so the task means were noisy. The real check uses all ~42 demos per task.
 - **Relative orientation also fixes an encoding wart.** LIBERO's absolute axis-angle sits around 2.94–3.24 rad, straddling π: the gripper points down. That representation is not unique there. `R₀ᵀ R` is near identity, so the relative encoding is small and continuous.
 
   The inverse (used only for verification) handles near-π exactly via `kkᵀ = ((R+Rᵀ)/2 − cos θ I)/(1 − cos θ)`. A first-order version left 1e-4 errors on real LIBERO episodes, which the converter's round-trip check caught.

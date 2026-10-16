@@ -39,7 +39,7 @@ It is also where the problem is most visible. In LIBERO-Plus Table 1, π0 (which
 | Arm | State input | Notes |
 |---|---|---|
 | **N**, none | omitted | openpi's stock `pi05_libero` config (`discrete_state_input=False`). The prompt is `Task: …` with no state string, and π0.5 has no other state pathway (§2.4). The released `pi05_libero` checkpoint is this arm. |
-| **R**, raw | `[eef_pos(3), eef_axis_angle(3), gripper_qpos(2)]`, robot base frame | `pi05_libero` with `discrete_state_input=True`. The quantile-normalized state is cut into 256 bins and written into the prompt as `State: b1 … b8;` (naive fusion). This is what Blackout vs Freeze trained. |
+| **R**, raw | `[eef_pos(3), eef_axis_angle(3), gripper_qpos(2)]`, world frame (LIBERO's `robot0_eef_pos`; robot bases sit ~0.9 m apart across scene layouts) | `pi05_libero` with `discrete_state_input=True`. The quantile-normalized state is cut into 256 bins and written into the prompt as `State: b1 … b8;` (naive fusion). This is what Blackout vs Freeze trained. |
 | **C**, corrected | episode-relative: `pos_t − pos_0`, `axis_angle(R_0ᵀ R_t)`, gripper absolute | As R, plus a repack transform that subtracts the episode's first state before `Normalize`. Norm stats are recomputed with `compute_norm_stats.py` on the transformed data. |
 
 **Why C is episode-relative state and not regularization.**

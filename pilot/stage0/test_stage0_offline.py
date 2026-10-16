@@ -336,6 +336,87 @@ def test_check4_flags_out_of_range_C():
     assert c4["R_share_inside_for_contrast"]["robot_init:0.2"] == 0.5
 
 
+# --- anchor check ----------------------------------------------------------------------------
+def _anchor_fixture(d, rng, n_demo=30, tasks=("pick the bowl", "open the drawer")):
+    """Local LeRobot-v2-like dataset: per task, frame-0 anchors scattered ~10 mm in a plane."""
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+    root = pathlib.Path(d) / "ds"
+    (root / "meta").mkdir(parents=True)
+    centers = {tasks[0]: np.array([-0.2, 0.0, 1.17]), tasks[1]: np.array([0.7, 0.0, 1.17])}  # ~0.9 m apart
+    eps, idx = [], 0
+    for task in tasks:
+        for _ in range(n_demo):
+            n = 20
+            s = _traj(rng, n=n)
+            s[:, :3] += centers[task] - s[0, :3] + np.r_[rng.normal(0, 0.006, 2), 0.0]
+            f = root / "data" / "chunk-000" / f"episode_{idx:06d}.parquet"
+            f.parent.mkdir(parents=True, exist_ok=True)
+            pq.write_table(pa.table({"state": pa.FixedSizeListArray.from_arrays(
+                pa.array(s.astype(np.float32).reshape(-1), pa.float32()), 8)}), f)
+            eps.append({"episode_index": idx, "tasks": [task], "length": n})
+            idx += 1
+    (root / "meta" / "info.json").write_text(json.dumps({
+        "codebase_version": "v2.0", "chunks_size": 1000,
+        "data_path": "data/chunk-{episode_chunk:03d}/episode_{episode_index:06d}.parquet"}))
+    (root / "meta" / "episodes.jsonl").write_text("".join(json.dumps(e) + "\n" for e in eps))
+    return root, centers
+
+
+def _eval_rows(rng, centers, shift_mm=(0, 0, 0), arms=("N", "R"), jitter_arm_mm=0.0, extra_task=None):
+    rows = []
+    for task, c in centers.items():
+        for init in range(10):
+            base = _traj(rng, n=1)[0]
+            base[:3] = c + np.r_[rng.normal(0, 0.006, 2), 0.0] + np.array(shift_mm) / 1000
+            for k, arm in enumerate(arms):
+                st = base.copy()
+                st[0] += k * jitter_arm_mm / 1000
+                for cond in ("id", "scene_blackout", "robot_init:0.2"):
+                    rows.append(dict(arm=arm, seed="41", suite="libero_spatial", task=list(centers).index(task),
+                                     task_language=task.upper() + ".", init=init, condition=cond,
+                                     perturbation={"applied_norm": 0.2} if cond.startswith("robot") else None,
+                                     start_state=(st + (1.0 if cond.startswith("robot") else 0.0)).tolist()))
+    if extra_task:
+        rows.append(dict(arm="N", seed="41", suite="libero_goal", task=9, task_language=extra_task, init=0,
+                         condition="id", perturbation=None, start_state=_traj(rng, n=1)[0].tolist()))
+    return rows
+
+
+def _run_anchor_check(d, root, rows):
+    import check_anchors as ca
+    p = pathlib.Path(d) / "eval.jsonl"
+    p.write_text("".join(json.dumps(r) + "\n" for r in rows))
+    out = pathlib.Path(d) / "anchor.json"
+    sys.argv = ["check_anchors", str(p), "--dataset", str(root), "--out", str(out)]
+    try:
+        ca.main()
+    except SystemExit:
+        pass
+    return json.loads(out.read_text())
+
+
+def test_anchor_check():
+    try:
+        import pyarrow  # noqa: F401
+    except ImportError:
+        print("     (pyarrow missing; anchor test skipped)")
+        return
+    rng = np.random.default_rng(4)
+    with tempfile.TemporaryDirectory() as d:
+        root, centers = _anchor_fixture(d, rng)
+        good = _run_anchor_check(d, root, _eval_rows(rng, centers))
+        assert good["pass_"], good["checks"]
+        assert good["n_eval_instances"] == 20  # robot_init rows (start +1.0) were excluded
+        assert max(abs(x) for x in good["systematic"]["mean_offset_mm"]) < 5
+        shifted = _run_anchor_check(d, root, _eval_rows(rng, centers, shift_mm=(0, 0, 10)))
+        assert not shifted["checks"]["systematic_pos"] and 8 < shifted["systematic"]["mean_offset_mm"][2] < 12
+        unpaired = _run_anchor_check(d, root, _eval_rows(rng, centers, jitter_arm_mm=0.5))
+        assert not unpaired["checks"]["pairing"]
+        unmatched = _run_anchor_check(d, root, _eval_rows(rng, centers, extra_task="stack the blocks"))
+        assert not unmatched["checks"]["all_tasks_matched"] and unmatched["unmatched_tasks"] == ["stack the blocks"]
+
+
 if __name__ == "__main__":
     fails = 0
     for name, fn in sorted(globals().items()):
