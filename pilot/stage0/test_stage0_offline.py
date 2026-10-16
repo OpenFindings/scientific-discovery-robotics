@@ -1,0 +1,237 @@
+"""Offline tests for the Stage 0 client and analysis (no GPU, LIBERO or openpi needed).
+
+LIBERO, robosuite and openpi_client are replaced by small fakes, so this
+checks the logic the pilot depends on: the robot-init perturbation, the
+fault timing, prompt logging, pairing determinism, and that the analysis
+recovers known effects and applies the exit criteria.
+
+  python -m pytest -q test_stage0_offline.py   (or: python test_stage0_offline.py)
+"""
+import json
+import pathlib
+import sys
+import tempfile
+import types
+
+import numpy as np
+
+HERE = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+
+# --- stub the client-environment imports -------------------------------------------------
+for name in ["libero", "libero.libero", "libero.libero.envs", "openpi_client", "tyro", "tqdm"]:
+    sys.modules.setdefault(name, types.ModuleType(name))
+sys.modules["libero.libero"].benchmark = types.SimpleNamespace()
+sys.modules["libero.libero"].get_libero_path = lambda k: "/tmp"
+sys.modules["libero.libero.envs"].OffScreenRenderEnv = object
+sys.modules["tqdm"].tqdm = lambda x, **k: x
+image_tools = types.SimpleNamespace(convert_to_uint8=lambda x: x.astype(np.uint8),
+                                    resize_with_pad=lambda x, h, w: x[:h, :w])
+sys.modules["openpi_client"].image_tools = image_tools
+sys.modules["openpi_client"].websocket_client_policy = types.SimpleNamespace()
+sys.modules["tyro"].cli = lambda f: None
+
+import analyze_stage0 as an  # noqa: E402
+import eval_libero as ev  # noqa: E402
+
+
+# --- fakes ---------------------------------------------------------------------------------
+class FakeModel:
+    def __init__(self, names, ranges):
+        self._ids = {n: i for i, n in enumerate(names)}
+        self.jnt_range = np.array(ranges)
+
+    def joint_name2id(self, n):
+        return self._ids[n]
+
+
+class FakeController:
+    def __init__(self):
+        self.initial_joints = None
+
+    def update_initial_joints(self, q):
+        self.initial_joints = np.array(q)
+
+
+class FakeEnv:
+    """7-joint arm at the LIBERO home pose; the gripper closes after `close_at` policy steps."""
+    HOME = np.array([0, -0.161, 0.0, -2.445, 0.0, 2.227, np.pi / 4])
+
+    def __init__(self, close_at=20, succeed_at=None):
+        names = [f"j{i}" for i in range(7)]
+        ranges = [[-2.9, 2.9], [-1.76, 1.76], [-2.9, 2.9], [-3.07, -0.07], [-2.9, 2.9], [-0.02, 3.75], [-2.9, 2.9]]
+        qpos = np.concatenate([self.HOME, [0.04, -0.04]])
+        self.sim = types.SimpleNamespace(data=types.SimpleNamespace(qpos=qpos, qvel=np.zeros(9)),
+                                         model=FakeModel(names, ranges), forward=lambda: None)
+        robot = types.SimpleNamespace(_ref_joint_pos_indexes=list(range(7)), _ref_joint_vel_indexes=list(range(7)),
+                                      robot_joints=names, controller=FakeController())
+        self.env = types.SimpleNamespace(robots=[robot], sim=self.sim)
+        self.close_at, self.succeed_at, self.t = close_at, succeed_at, 0
+
+    def reset(self):
+        self.t = 0
+        self.sim.data.qpos[:7] = self.HOME
+
+    def set_init_state(self, s):
+        return self._obs()
+
+    def _obs(self):
+        closed = self.t >= self.close_at + 10  # +10 settle steps
+        g = 0.005 if closed else 0.04
+        img = np.full((8, 8, 3), 100, np.uint8)
+        return {"agentview_image": img, "robot0_eye_in_hand_image": img.copy(),
+                "robot0_eef_pos": self.sim.data.qpos[:3].copy(), "robot0_eef_quat": np.array([0, 0, 0, 1.0]),
+                "robot0_gripper_qpos": np.array([g, -g])}
+
+    def step(self, a):
+        self.t += 1
+        done = self.succeed_at is not None and self.t >= self.succeed_at + 10
+        return self._obs(), 0.0, done, {}
+
+
+class FakeClient:
+    def __init__(self):
+        self.calls = []
+
+    def infer(self, el):
+        self.calls.append(el)
+        out = {"actions": np.zeros((10, 7))}
+        if el.get("pilot/log_prompt"):
+            out["pilot/prompt"] = "Task: x, State: 1 2 3;\nAction: "
+        return out
+
+
+ARGS = types.SimpleNamespace(resize_size=8, replan_steps=5, num_steps_wait=10, video_dir=None)
+
+
+# --- client tests ----------------------------------------------------------------------------
+def test_range_and_axisangle():
+    assert ev._range("0-2,5") == [0, 1, 2, 5]
+    assert np.allclose(ev._quat2axisangle([0, 0, 0, 1.0]), 0)
+    s = np.sin(np.pi / 4)
+    assert np.allclose(ev._quat2axisangle([s, 0, 0, np.cos(np.pi / 4)]), [np.pi / 2, 0, 0])
+
+
+def test_robot_init_matches_liberoplus_parameterization():
+    norms = []
+    for k in range(50):
+        env = FakeEnv()
+        rec = ev.perturb_robot_init(env, 0.2, ev._rng("libero_spatial", 0, k, "robot_init:0.2", "dir"))
+        norms.append(rec["applied_norm"])
+        assert np.allclose(env.env.robots[0].controller.initial_joints, env.sim.data.qpos[:7])
+        assert np.allclose(np.linalg.norm(rec["offset"]), rec["applied_norm"], atol=1e-4)
+    # exact L2 norm unless a joint limit clipped it
+    assert np.mean(np.isclose(norms, 0.2, atol=1e-4)) > 0.9
+
+
+def test_pairing_is_deterministic_across_arms():
+    a, b = FakeEnv(), FakeEnv()
+    ra = ev.perturb_robot_init(a, 0.3, ev._rng("libero_goal", 3, 7, "robot_init:0.3", "dir"))
+    rb = ev.perturb_robot_init(b, 0.3, ev._rng("libero_goal", 3, 7, "robot_init:0.3", "dir"))
+    assert ra["offset"] == rb["offset"]
+
+
+def test_scene_blackout_and_prompt_logging():
+    env, cl = FakeEnv(close_at=10**6, succeed_at=30), FakeClient()
+    rec, _ = ev.run_episode(env, cl, "task", None, "scene_blackout", ("s", 0, 0), ARGS, 220)
+    assert rec["success"] and rec["steps"] == 30
+    assert all(c["observation/image"].max() == 0 for c in cl.calls)
+    assert all(c["observation/wrist_image"].max() > 0 for c in cl.calls)
+    assert sum("pilot/log_prompt" in c for c in cl.calls) == 1 and "State:" in rec["prompt"]
+    assert len(rec["states"]) == len(cl.calls) == 6
+
+
+def test_wrist_blackout_starts_after_closure_plus_delay():
+    env, cl = FakeEnv(close_at=20), FakeClient()
+    rec, _ = ev.run_episode(env, cl, "task", None, "wrist_blackout_after_close", ("s", 1, 2), ARGS, 120)
+    assert not rec["success"] and rec["closure_step"] is not None
+    # gripper reads closed from policy step 20; three consecutive closed readings -> trigger at step 22
+    assert rec["closure_step"] == 22
+    assert rec["closure_step"] <= rec["fault_onset"] <= rec["closure_step"] + ev.MAX_DELAY
+    for i, c in enumerate(cl.calls):  # queries happen at steps 0, 5, 10, ...
+        assert (c["observation/wrist_image"].max() == 0) == (5 * i >= rec["fault_onset"])
+        assert c["observation/image"].max() > 0
+
+
+def test_id_condition_untouched():
+    env, cl = FakeEnv(), FakeClient()
+    rec, _ = ev.run_episode(env, cl, "task", None, "id", ("s", 0, 0), ARGS, 50)
+    assert rec["perturbation"] is None and rec["fault_onset"] is None
+    assert all(c["observation/image"].max() > 0 and c["observation/wrist_image"].max() > 0 for c in cl.calls)
+
+
+# --- analysis tests --------------------------------------------------------------------------
+def synth(effects, seed_sd=0.03, n_init=10, rng=None):
+    """effects: {(arm, cond): success prob}; 4 suites x 10 tasks x n_init, two seeds per arm."""
+    rng = rng or np.random.default_rng(1)
+    rows = []
+    for (arm, cond), p in effects.items():
+        for seed in ("41", "42"):
+            ps = np.clip(p + rng.normal(0, seed_sd), 0, 1)
+            for suite in ("libero_spatial", "libero_object", "libero_goal", "libero_10"):
+                for task in range(10):
+                    for i in range(n_init):
+                        rows.append(dict(arm=arm, seed=seed, suite=suite, task=task, init=i, condition=cond,
+                                         success=bool(rng.random() < ps),
+                                         prompt="Task: t, State: 1;" if arm == "R" else "Task: t",
+                                         states=[[0.0] * 8, [5.0] * 8] if cond.startswith("robot") else [[0.0] * 8]))
+    return rows
+
+
+GOOD = {("N", "id"): .94, ("R", "id"): .93, ("N", "scene_blackout"): .10, ("R", "scene_blackout"): .30,
+        ("N", "robot_init:0.2"): .60, ("R", "robot_init:0.2"): .25}
+
+
+def run_analysis(rows, extra=()):
+    with tempfile.TemporaryDirectory() as d:
+        p = pathlib.Path(d) / "x.jsonl"
+        p.write_text("".join(json.dumps(r) + "\n" for r in rows))
+        ns = pathlib.Path(d) / "ns.json"
+        ns.write_text(json.dumps({"norm_stats": {"state": {"q01": [-1.0] * 8, "q99": [1.0] * 8,
+                                                           "mean": [0] * 8, "std": [1] * 8}}}))
+        out = pathlib.Path(d) / "s.json"
+        sys.argv = ["analyze", str(p), "--norm-stats", str(ns), "--out", str(out), *extra]
+        an.main()
+        return json.loads(out.read_text())
+
+
+def test_analysis_passes_on_expected_pattern():
+    rep = run_analysis(synth(GOOD))
+    c = rep["checks"]
+    assert c["2_anchor"]["pass_"] and 10 <= c["2_anchor"]["R_minus_N"]["diff_pp"] <= 32
+    lo, hi = c["2_anchor"]["R_minus_N"]["ci95_pp"]
+    assert lo < c["2_anchor"]["R_minus_N"]["diff_pp"] < hi
+    assert c["3_config_shift_bites"]["pass_"]
+    assert c["prompt_flags"]["pass_"] and rep["stage0_exit"]
+    assert rep["state_tokens"]["R|robot_init:0.2"]["share_tokens_saturated_255"] == 0.5
+
+
+def test_analysis_fails_without_anchor_and_flags_prompt_mismatch():
+    bad = dict(GOOD)
+    bad[("R", "scene_blackout")] = .11
+    rows = synth(bad)
+    for r in rows:
+        if r["arm"] == "N":
+            r["prompt"] = "Task: t, State: 9;"  # N served with the state flag on
+    rep = run_analysis(rows)
+    assert not rep["checks"]["2_anchor"]["pass_"]
+    assert not rep["checks"]["prompt_flags"]["pass_"] and not rep["stage0_exit"]
+
+
+def test_seed_recommendation():
+    assert an.recommend_seeds({"id": 1.0, "scene_blackout": 3.0})["seeds"] == 4
+    assert an.recommend_seeds({"scene_blackout": 5.5})["seeds"] == 5
+    assert an.recommend_seeds({"scene_blackout": 8.0})["seeds"] == "6-7"
+
+
+if __name__ == "__main__":
+    fails = 0
+    for name, fn in sorted(globals().items()):
+        if name.startswith("test_"):
+            try:
+                fn()
+                print("ok  ", name)
+            except Exception as e:  # noqa: BLE001
+                fails += 1
+                print("FAIL", name, repr(e))
+    sys.exit(fails)

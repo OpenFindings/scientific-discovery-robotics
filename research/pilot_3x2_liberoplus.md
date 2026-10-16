@@ -205,7 +205,7 @@ Stage 0 measures the seed SD:
    If this fails, the pipeline differs from theirs. One possibility is how the no-state arm omits state: Blackout vs Freeze notes that the released π0.5 LIBERO checkpoint uses no state at all. Debug before going on.
 3. **Configuration shift bites.** R − N under K is < −3 pp at one or more magnitudes. If raw state does not hurt here, CK cannot discriminate. Stop and raise the magnitude, or add the height shift from 2509.18644.
 4. **C is in distribution where intended.** Under K-robot, ≥ 95% of arm C's state vectors fall inside the 1st–99th percentile of training. Under R, the same statistic is expected to fail. Also log the share of state tokens that are saturated (255) or out of range (`-1`) in each arm (§2.4). This confirms the encoding does what §2.1 claims.
-5. **No floor or ceiling.** The success of N under each primary condition lies within 10–90%. If not, move to the next magnitude level, which is pre-listed in the config.
+5. **No joint floor or ceiling.** Under each shifted condition, N and R are not *both* below 10% or *both* above 90%. N alone is expected near 9% under scene blackout (Blackout vs Freeze), so it is not tested alone. If a K condition fails, move to the next magnitude level, which is pre-listed in the config.
 
 ## 7. Budget (estimates; replace with Stage 0 measurements)
 
@@ -221,7 +221,7 @@ Stage 0 measures the seed SD:
 
 | Stage | Time | Work | Exit criterion |
 |---|---|---|---|
-| **0: pipeline and anchor** | ~1 week | Arms N and R, seeds 41 and 42. ID + F-scene + K-robot at magnitude 0.2. Also serve the released `pi05_libero` checkpoint as a reference for arm N (§2.4), and run the `pi05_base` zero-shot exposure probe (§9). | Checks 1–3 pass. Seed SD measured; seed count fixed. |
+| **0: pipeline and anchor** (scripts: `pilot/stage0/`) | ~1 week | Arms N and R, seeds 41 and 42. ID + F-scene + K-robot at magnitude 0.2. Also serve the released `pi05_libero` checkpoint as a reference for arm N (§2.4), and run the `pi05_base` zero-shot exposure probe (§9). | Checks 1–3 pass. Seed SD measured; seed count fixed. |
 | **1: the pilot** | ~2 weeks | All 3 arms × 5 seeds (4–7 after Stage 0) × all conditions. | Four contrasts classified. Decision table read off. Rows appended to `evidence_map/data/results.jsonl`, planner re-run. |
 | **2: conditional extensions** | ~2–3 weeks | **D** (state-token dropout 0.3, regularized) if CK = help, to test whether regularization trades away RF. **A second backbone**, Diffusion Policy from scratch (not π-family), on the same grid. **A non-LIBERO replication** (RoboTwin 2.0 or 2–3 real tasks with scene-camera blackout), as §5.6 of the plan requires. | Required before any claim beyond "π0.5 on LIBERO". |
 
