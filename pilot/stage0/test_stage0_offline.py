@@ -33,6 +33,7 @@ sys.modules["tyro"].cli = lambda f: None
 
 import analyze_stage0 as an  # noqa: E402
 import eval_libero as ev  # noqa: E402
+import relative_state as rs  # noqa: E402
 
 
 # --- fakes ---------------------------------------------------------------------------------
@@ -101,7 +102,8 @@ class FakeClient:
         return out
 
 
-ARGS = types.SimpleNamespace(resize_size=8, replan_steps=5, num_steps_wait=10, video_dir=None)
+ARGS = types.SimpleNamespace(resize_size=8, replan_steps=5, num_steps_wait=10, video_dir=None,
+                             state_mode="absolute")
 
 
 # --- client tests ----------------------------------------------------------------------------
@@ -190,6 +192,7 @@ def run_analysis(rows, extra=()):
         ns.write_text(json.dumps({"norm_stats": {"state": {"q01": [-1.0] * 8, "q99": [1.0] * 8,
                                                            "mean": [0] * 8, "std": [1] * 8}}}))
         out = pathlib.Path(d) / "s.json"
+        extra = [x.replace("{ns}", str(ns)) for x in extra]
         sys.argv = ["analyze", str(p), "--norm-stats", str(ns), "--out", str(out), *extra]
         an.main()
         return json.loads(out.read_text())
@@ -222,6 +225,115 @@ def test_seed_recommendation():
     assert an.recommend_seeds({"id": 1.0, "scene_blackout": 3.0})["seeds"] == 4
     assert an.recommend_seeds({"scene_blackout": 5.5})["seeds"] == 5
     assert an.recommend_seeds({"scene_blackout": 8.0})["seeds"] == "6-7"
+
+
+# --- arm C: relative state -------------------------------------------------------------------
+def _traj(rng, n=60, base_angle=3.1):
+    """LIBERO-like states: EEF pointing down (rotation ~pi about x), drifting."""
+    axis = np.array([1.0, 0.05, -0.02])
+    rot = axis / np.linalg.norm(axis) * base_angle + np.cumsum(rng.normal(0, 0.01, (n, 3)), 0)
+    pos = np.array([-0.05, 0.0, 0.68]) + np.cumsum(rng.normal(0, 0.005, (n, 3)), 0)
+    grip = np.tile([0.039, -0.039], (n, 1))
+    return np.concatenate([pos, rot, grip], 1)
+
+
+def test_relative_roundtrip_and_anchor():
+    rng = np.random.default_rng(0)
+    for angle in (0.3, 2.9, 3.14159, 3.2, 4.0):  # LIBERO angles straddle pi
+        s = _traj(rng, base_angle=angle)
+        rel = rs.to_relative(s, s[0])
+        assert np.abs(rel[0, :6]).max() < 1e-6 and np.allclose(rel[:, 6:], s[:, 6:])
+        back = rs.from_relative(rel, s[0])
+        assert np.abs(back[:, :3] - s[:, :3]).max() < 1e-5
+        assert np.abs(rs.axis_angle_to_matrix(back[:, 3:6]) - rs.axis_angle_to_matrix(s[:, 3:6])).max() < 1e-5
+
+
+def test_relative_rotation_ignores_global_frame():
+    rng = np.random.default_rng(1)
+    s = _traj(rng)
+    G = rs.axis_angle_to_matrix(np.array([0.1, -0.2, 0.3]))
+    moved = s.copy()
+    moved[:, :3] += np.array([0.1, -0.05, 0.02])  # rigid translation of the whole episode
+    moved[:, 3:6] = rs.matrix_to_axis_angle(np.einsum("ij,tjk->tik", G, rs.axis_angle_to_matrix(s[:, 3:6])))
+    a, b = rs.to_relative(s, s[0]), rs.to_relative(moved, moved[0])
+    assert np.allclose(a[:, :3], b[:, :3], atol=1e-6)    # translation removed
+    assert np.allclose(a[:, 3:6], b[:, 3:6], atol=1e-5)  # start-orientation change removed
+
+
+def test_online_encoder_matches_offline():
+    rng = np.random.default_rng(2)
+    s = _traj(rng)
+    enc = rs.EpisodeRelativeState()
+    online = np.stack([enc(x) for x in s])
+    assert np.allclose(online, rs.to_relative(s, s[0]), atol=1e-6)
+    enc.reset()
+    assert np.abs(enc(s[5])[:6]).max() < 1e-6
+
+
+def test_client_relative_mode_sends_zero_first_state():
+    env, cl = FakeEnv(succeed_at=12), FakeClient()
+    args = types.SimpleNamespace(**dict(vars(ARGS), state_mode="relative"))
+    ev.perturb_robot_init(env, 0.3, ev._rng("s", 0, 0, "robot_init:0.3", "dir"))
+    rec, _ = ev.run_episode(env, cl, "task", None, "id", ("s", 0, 0), args, 50)
+    first = np.asarray(cl.calls[0]["observation/state"])
+    assert np.abs(first[:6]).max() < 1e-6 and rec["state_mode"] == "relative"
+    assert np.allclose(rec["states"][0][:6], 0)
+
+
+def test_converter_on_synthetic_parquet():
+    try:
+        import pyarrow as pa
+        import pyarrow.parquet as pq
+    except ImportError:
+        print("     (pyarrow missing; converter test skipped)")
+        return
+    import convert_relative_state as cv
+    rng = np.random.default_rng(3)
+    with tempfile.TemporaryDirectory() as d:
+        src = pathlib.Path(d) / "src"
+        (src / "meta").mkdir(parents=True)
+        (src / "data" / "chunk-000").mkdir(parents=True)
+        lengths = [30, 45]
+        for ep, n in enumerate(lengths):
+            s = _traj(rng, n=n).astype(np.float32)
+            t = pa.table({"image": pa.array([{"bytes": b"png%d" % i, "path": None} for i in range(n)]),
+                          "state": pa.FixedSizeListArray.from_arrays(pa.array(s.reshape(-1), pa.float32()), 8),
+                          "actions": pa.FixedSizeListArray.from_arrays(pa.array(np.zeros(n * 7, np.float32)), 7),
+                          "frame_index": pa.array(np.arange(n), pa.int64()),
+                          "episode_index": pa.array(np.full(n, ep), pa.int64())})
+            t = t.replace_schema_metadata({b"huggingface": b"{}"})
+            pq.write_table(t, src / "data" / "chunk-000" / f"episode_{ep:06d}.parquet")
+        (src / "meta" / "info.json").write_text(json.dumps({"codebase_version": "v2.0", "total_episodes": 2}))
+        (src / "meta" / "stats.json").write_text(json.dumps({"state": {}}))
+        (src / "meta" / "episodes.jsonl").write_text(
+            "".join(json.dumps({"episode_index": i, "length": n}) + "\n" for i, n in enumerate(lengths)))
+        dst = pathlib.Path(d) / "dst"
+        sys.argv = ["convert", "--src", str(src), "--dst", str(dst)]
+        cv.main()
+        for ep in range(2):
+            a = pq.read_table(src / "data" / "chunk-000" / f"episode_{ep:06d}.parquet")
+            b = pq.read_table(dst / "data" / "chunk-000" / f"episode_{ep:06d}.parquet")
+            assert a.schema.equals(b.schema, check_metadata=True)
+            assert all(a.column(c).equals(b.column(c)) for c in a.column_names if c != "state")
+            st = np.array(b.column("state").to_pylist())
+            assert np.abs(st[0, :6]).max() < 1e-6
+            assert np.allclose(st, rs.to_relative(np.array(a.column("state").to_pylist()), a.column("state")[0].as_py()),
+                               atol=1e-6)
+        stats = json.loads((dst / "meta" / "stats.json").read_text())["state"]
+        assert len(stats["mean"]) == 8
+        assert json.loads((dst / "pilot_relstate_manifest.json").read_text())["frames"] == sum(lengths)
+
+
+def test_check4_flags_out_of_range_C():
+    rows = synth(GOOD)
+    extra = []
+    for r in synth({("C", "id"): .93, ("C", "scene_blackout"): .3, ("C", "robot_init:0.2"): .55}):
+        r["states"] = [[0.0] * 8, [0.1] * 8]
+        extra.append(r)
+    rep = run_analysis(rows + extra, ["--norm-stats", "C=" + "{ns}"])
+    c4 = rep["checks"]["4_C_in_distribution"]
+    assert c4["pass_"] and c4["C_share_inside"]["robot_init:0.2"] == 1.0
+    assert c4["R_share_inside_for_contrast"]["robot_init:0.2"] == 0.5
 
 
 if __name__ == "__main__":

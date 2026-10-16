@@ -6,6 +6,9 @@ Checked against openpi @ 215abfb (2026-08-24). Every config is the stock
 
   pilot_N   discrete_state_input=False  (no state; stock openpi LIBERO behaviour)
   pilot_R   discrete_state_input=True   (raw absolute state as prompt tokens)
+  pilot_C   discrete_state_input=True, trained on local/libero_relstate
+            (episode-relative state; built by convert_relative_state.py and
+            served with eval_libero.py --state-mode relative)
   pilot_base_probe  serving-only: pi05_base weights with LIBERO norm stats,
                     state on (pi05_base was pretrained with state tokens)
 
@@ -13,7 +16,6 @@ openpi reads `discrete_state_input` in the transform factory, not from the
 checkpoint, so a checkpoint must be served with the config it was trained
 with. serve.py logs the decoded prompt to make a mismatch visible.
 
-Arm C (episode-relative state) is a Stage 1 config and is not defined here.
 """
 import dataclasses
 
@@ -40,10 +42,14 @@ RECIPE = dict(
 )
 
 
-def _arm(name: str, discrete_state_input: bool) -> _config.TrainConfig:
+RELSTATE_REPO = "local/libero_relstate"  # convert_relative_state.DST_REPO
+
+
+def _arm(name: str, discrete_state_input: bool, repo_id: str | None = None) -> _config.TrainConfig:
     base = _config.get_config(BASE)
     model = dataclasses.replace(base.model, discrete_state_input=discrete_state_input)
-    return dataclasses.replace(base, name=name, model=model, **RECIPE)
+    data = dataclasses.replace(base.data, repo_id=repo_id) if repo_id else base.data
+    return dataclasses.replace(base, name=name, model=model, data=data, **RECIPE)
 
 
 def register() -> list[str]:
@@ -51,6 +57,7 @@ def register() -> list[str]:
     configs = [
         _arm("pilot_N", discrete_state_input=False),
         _arm("pilot_R", discrete_state_input=True),
+        _arm("pilot_C", discrete_state_input=True, repo_id=RELSTATE_REPO),
         _arm("pilot_base_probe", discrete_state_input=True),
     ]
     for c in configs:

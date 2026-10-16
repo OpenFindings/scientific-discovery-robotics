@@ -16,6 +16,11 @@ Conditions (comma-separated --conditions):
                              LIBERO-Plus's robot-init perturbation, whose 500 released
                              offsets have L2 norms of exactly 0.1-0.5.
 
+State encoding (--state-mode): `absolute` sends LIBERO's 8-D state as is (arms N, R);
+`relative` sends relative_state.to_relative(state, first state of the episode)
+(arm C), the same function used to build its training set. The anchor is the
+state at the first policy query, after the settle steps.
+
 Every random draw (perturbation direction, fault delay) is seeded from the
 instance and condition only, so all arms and seeds see identical instances.
 
@@ -39,6 +44,7 @@ from libero.libero import benchmark, get_libero_path
 from libero.libero.envs import OffScreenRenderEnv
 from openpi_client import image_tools
 from openpi_client import websocket_client_policy as _websocket_client_policy
+from relative_state import EpisodeRelativeState
 
 LIBERO_DUMMY_ACTION = [0.0] * 6 + [-1.0]
 LIBERO_ENV_RESOLUTION = 256
@@ -57,6 +63,7 @@ class Args:
     tasks: str = "0-9"
     init_states: str = "0-9"
     conditions: str = "id,scene_blackout,robot_init:0.2"
+    state_mode: str = "absolute"  # absolute (N, R) | relative (C)
     eval_seed: int = 7
     resize_size: int = 224
     replan_steps: int = 5
@@ -137,6 +144,7 @@ def run_episode(env, client, task_description, init_state, cond, inst, args, max
         rec["fault_onset"] = 0
 
     action_plan = collections.deque()
+    encode = EpisodeRelativeState() if args.state_mode == "relative" else (lambda x: x)
     states, frames, prompt = [], [], None
     closed_run, done, t = 0, False, 0
     for _ in range(args.num_steps_wait):  # let objects settle; the arm holds its (possibly perturbed) pose
@@ -152,8 +160,8 @@ def run_episode(env, client, task_description, init_state, cond, inst, args, max
         if args.video_dir:
             frames.append(np.concatenate([img, wrist], axis=1))
         if not action_plan:
-            state = _state(obs)
-            states.append(state.round(5).tolist())
+            state = np.asarray(encode(_state(obs)), dtype=np.float32)  # what the policy is sent
+            states.append(np.round(state, 5).tolist())
             element = {"observation/image": img, "observation/wrist_image": wrist,
                        "observation/state": state, "prompt": str(task_description)}
             if prompt is None:
@@ -172,11 +180,13 @@ def run_episode(env, client, task_description, init_state, cond, inst, args, max
             rec["closure_step"] = t
             rec["fault_onset"] = t + delay
     rec.update(success=bool(done), steps=t, prompt=prompt, start_state=start_state.round(5).tolist(),
-               states=states)
+               states=states, state_mode=args.state_mode)
     return rec, frames
 
 
 def main(args: Args) -> None:
+    if args.state_mode not in ("absolute", "relative"):
+        raise ValueError(f"--state-mode must be absolute or relative, not {args.state_mode}")
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     done_keys = set()

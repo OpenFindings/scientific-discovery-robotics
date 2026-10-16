@@ -10,11 +10,15 @@ the Stage 0 exit criteria from research/pilot_3x2_liberoplus.md (section 6, and 
   check 5  under each shifted condition, N and R are not both < 10% or both > 90%
   prompt   arm N prompts contain no "State:", arm R prompts all do
   seeds    between-seed SD per condition -> seed count for Stage 1
-  tokens   share of R's state tokens saturated (bin 255) or out of range (-1)
+  check 4  (when arm C is present) >= 95% of C's state vectors under robot_init lie inside
+           C's training 1st-99th percentile box
+  tokens   share of state tokens saturated (bin 255) or out of range (-1), per arm with
+           that arm's norm stats (arms without their own stats are scored with R's)
 
 Pure numpy. Usage:
   python analyze_stage0.py results/stage0/*.jsonl \
-      --norm-stats assets/pilot_R/physical-intelligence/libero/norm_stats.json \
+      --norm-stats R=assets/pilot_R/physical-intelligence/libero/norm_stats.json \
+      --norm-stats C=assets/pilot_C/local/libero_relstate/norm_stats.json \
       --out results/stage0/summary.json
 """
 import argparse
@@ -86,15 +90,23 @@ def diff_ci(rows, a, b, cond, suites=None, reps=2000, rng=None):
                 n_seeds=[len(ta), len(tb)], n_tasks=len(tasks))
 
 
-def token_stats(rows, norm_stats_path):
-    ns = json.loads(pathlib.Path(norm_stats_path).read_text())["norm_stats"]["state"]
-    q01, q99 = np.array(ns["q01"])[:8], np.array(ns["q99"])[:8]
+def _quantiles(path):
+    ns = json.loads(pathlib.Path(path).read_text())["norm_stats"]["state"]
+    return np.array(ns["q01"])[:8], np.array(ns["q99"])[:8]
+
+
+def token_stats(rows, stats_by_arm):
+    """stats_by_arm: {arm: norm_stats.json path}; arms without an entry use R's."""
     out = {}
     groups = defaultdict(list)
     for r in rows:
         if r.get("states"):
             groups[(r["arm"], r["condition"])].append(np.array(r["states"]))
     for (arm, cond), arrs in sorted(groups.items()):
+        path = stats_by_arm.get(arm) or stats_by_arm.get("R")
+        if path is None:
+            continue
+        q01, q99 = _quantiles(path)
         x = np.concatenate(arrs)
         norm = (x - q01) / (q99 - q01 + 1e-6) * 2.0 - 1.0  # openpi _normalize_quantile, no clipping
         tok = np.digitize(norm, bins=np.linspace(-1, 1, 257)[:-1]) - 1  # openpi PaligemmaTokenizer
@@ -103,7 +115,9 @@ def token_stats(rows, norm_stats_path):
         out[f"{arm}|{cond}"] = dict(
             share_tokens_saturated_255=round(float((tok == 255).mean()), 4),
             share_tokens_below_range=round(float((tok == -1).mean()), 4),
-            share_first_states_outside_q01_q99=round(float((np.abs(fnorm) > 1).any(axis=1).mean()), 4))
+            share_first_states_outside_q01_q99=round(float((np.abs(fnorm) > 1).any(axis=1).mean()), 4),
+            share_states_inside_q01_q99=round(float((np.abs(norm) <= 1).all(axis=1).mean()), 4),
+            stats_from="own" if arm in stats_by_arm else "R")
     return out
 
 
@@ -135,7 +149,8 @@ def recommend_seeds(sds):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("jsonl", nargs="+")
-    ap.add_argument("--norm-stats", help="pilot_R norm_stats.json, for the state-token check")
+    ap.add_argument("--norm-stats", action="append", default=[],
+                    help="ARM=norm_stats.json (repeatable); a bare path means R")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     rows = load(a.jsonl)
@@ -191,8 +206,17 @@ def main():
     if pert:
         rep["robot_init_applied"] = dict(n=len(pert), mean_norm=round(float(np.mean([p["applied_norm"] for p in pert])), 4),
                                          share_clipped=round(float(np.mean([p["clipped"] for p in pert])), 3))
-    if a.norm_stats:
-        rep["state_tokens"] = token_stats(rows, a.norm_stats)
+    stats_by_arm = dict(x.split("=", 1) if "=" in x else ("R", x) for x in a.norm_stats)
+    if stats_by_arm:
+        rep["state_tokens"] = token_stats(rows, stats_by_arm)
+        if "C" in arms and "C" in stats_by_arm:
+            inside = {k.split("|")[1]: v["share_states_inside_q01_q99"] for k, v in rep["state_tokens"].items()
+                      if k.startswith("C|robot_init")}
+            ref = {k.split("|")[1]: v["share_states_inside_q01_q99"] for k, v in rep["state_tokens"].items()
+                   if k.startswith("R|robot_init")}
+            checks["4_C_in_distribution"] = dict(pass_=bool(inside) and all(v >= 0.95 for v in inside.values()),
+                                                 C_share_inside=inside, R_share_inside_for_contrast=ref)
+            rep["stage0_exit"] = all(v["pass_"] for v in checks.values())
 
     text = json.dumps(rep, indent=1)
     if a.out:

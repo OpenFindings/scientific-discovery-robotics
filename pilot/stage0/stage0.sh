@@ -10,6 +10,7 @@
 #
 # Usage:  OPENPI_ROOT=~/openpi bash stage0.sh [step ...]
 #   steps: norm_stats train eval reference probe analyze   (default: all, in order)
+#   arm C (Stage 1): ARMS="C" bash stage0.sh convert norm_stats train eval analyze
 set -euo pipefail
 
 : "${OPENPI_ROOT:?set OPENPI_ROOT to the openpi checkout}"
@@ -32,9 +33,10 @@ srv() { # srv <config> <checkpoint dir> [extra serve.py args...]
 }
 
 client() { # client <arm> <seed label> <conditions> [init range]; one process per suite, in parallel
-  local pids=()
+  local pids=() mode=absolute
+  [ "$1" = C ] && mode=relative   # arm C is sent episode-relative state, as it was trained
   for s in $SUITES; do
-    examples/libero/.venv/bin/python "$PILOT/eval_libero.py" --arm "$1" --seed-label "$2" \
+    examples/libero/.venv/bin/python "$PILOT/eval_libero.py" --arm "$1" --seed-label "$2" --state-mode "$mode" \
       --port "$PORT" --suites "$s" --conditions "$3" --init-states "${4:-0-9}" \
       --out "$OUT/${1}_s${2}.jsonl.$s" >"$OUT/logs/client_${1}_s${2}_$s.log" 2>&1 &
     pids+=($!)
@@ -43,15 +45,22 @@ client() { # client <arm> <seed label> <conditions> [init range]; one process pe
   cat "$OUT/${1}_s${2}.jsonl."* >"$OUT/${1}_s${2}.jsonl"
 }
 
+step_convert() { # arm C training set: $HF_LEROBOT_HOME/local/libero_relstate (~30 GB)
+  uv run python "$PILOT/convert_relative_state.py" ${CONVERT_ARGS:-}
+}
+
 step_norm_stats() {
   for arm in $ARMS; do uv run python "$PILOT/run_openpi.py" norm_stats --config-name "pilot_$arm"; done
   # N and R read the same data, so their state/action stats must be identical.
-  cmp "assets/pilot_N/physical-intelligence/libero/norm_stats.json" \
-      "assets/pilot_R/physical-intelligence/libero/norm_stats.json" && echo "norm stats identical across arms"
+  if [ -f assets/pilot_N/physical-intelligence/libero/norm_stats.json ] && \
+     [ -f assets/pilot_R/physical-intelligence/libero/norm_stats.json ]; then
+    cmp "assets/pilot_N/physical-intelligence/libero/norm_stats.json" \
+        "assets/pilot_R/physical-intelligence/libero/norm_stats.json" && echo "norm stats identical (N, R)"
+  fi
 }
 
 step_train() {
-  uv run python "$PILOT/run_openpi.py" describe pilot_N pilot_R | tee "$OUT/configs.jsonl"
+  uv run python "$PILOT/run_openpi.py" describe $(for a in $ARMS; do echo "pilot_$a"; done) | tee -a "$OUT/configs.jsonl"
   for arm in $ARMS; do for seed in $SEEDS; do
     XLA_PYTHON_CLIENT_MEM_FRACTION=0.9 uv run python "$PILOT/run_openpi.py" train "pilot_$arm" \
       --exp-name "s$seed" --seed "$seed" --overwrite $WANDB_FLAG 2>&1 | tee "$OUT/logs/train_${arm}_s$seed.log"
@@ -85,7 +94,9 @@ step_probe() { # pi05_base zero-shot on LIBERO: 10 tasks x 5 init states per sui
 
 step_analyze() {
   uv run python "$PILOT/analyze_stage0.py" "$OUT"/*.jsonl \
-    --norm-stats "assets/pilot_R/physical-intelligence/libero/norm_stats.json" \
+    --norm-stats "R=assets/pilot_R/physical-intelligence/libero/norm_stats.json" \
+    $( [ -f assets/pilot_C/local/libero_relstate/norm_stats.json ] && \
+       echo --norm-stats "C=assets/pilot_C/local/libero_relstate/norm_stats.json" ) \
     --out "$OUT/summary.json" | tail -n 60
 }
 
