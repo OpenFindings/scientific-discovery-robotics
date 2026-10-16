@@ -171,7 +171,7 @@ def run_episode(env, client, task_description, init_state, cond, inst, args, max
         rec["perturbation"] = perturb_robot_init(env, float(cond.split(":")[1]), _rng(*inst, cond, "dir"))
     if cond.startswith("layout:"):
         obs, rec["perturbation"] = perturb_layout(env, float(cond.split(":")[1]), _rng(*inst, cond, "dir"),
-                                                  LIBERO_DUMMY_ACTION)
+                                                  LIBERO_DUMMY_ACTION, reset_fn=lambda: _safe_reset(env))
         if obs is None:  # not applicable to this task, or no valid placement: not an episode
             rec.update(skipped=True, success=None, steps=0, prompt=None, start_state=None, states=[],
                        state_mode=args.state_mode)

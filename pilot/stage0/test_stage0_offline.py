@@ -503,6 +503,11 @@ def test_layout_paired_and_skips_fixture_only_tasks():
     _, ra = lp.perturb_layout(a, 0.03, ev._rng("libero_goal", 4, 2, "layout:0.03", "dir"), ev.LIBERO_DUMMY_ACTION)
     _, rb = lp.perturb_layout(b, 0.03, ev._rng("libero_goal", 4, 2, "layout:0.03", "dir"), ev.LIBERO_DUMMY_ACTION)
     assert ra["offset_m"] == rb["offset_m"] and ra["target"] == "bowl"
+    resets = []
+    c = LayoutFakeEnv({"bowl": [0.0, 0.0], "plate": [0.1, 0.1]}, interest=["bowl"])
+    obs, rc = lp.perturb_layout(c, 0.03, ev._rng("libero_goal", 4, 2, "layout:0.03", "dir"), ev.LIBERO_DUMMY_ACTION,
+                                reset_fn=lambda: resets.append(1))
+    assert obs is not None and resets == [1] and rc["offset_m"] == ra["offset_m"]  # fresh reset, same placement
     # "turn on the stove": only a fixture of interest -> skipped, never run
     env, cl = LayoutFakeEnv({"bowl": [0.0, 0.0]}, interest=["flat_stove_1"]), FakeClient()
     rec, _ = ev.run_episode(env, cl, "turn on the stove", None, "layout:0.03", ("libero_goal", 3, 0), ARGS, 50)

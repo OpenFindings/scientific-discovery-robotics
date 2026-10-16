@@ -33,8 +33,12 @@ state is settled once; each try is settled the same way and must end with
   * the task not already solved.
 Otherwise the next deterministic direction is tried, up to 8 tries; the k-th try
 rotates the direction by k golden angles.
-The validated placement is restored exactly (env.set_init_state on the saved
-MuJoCo state), so the episode's own settle steps replay the same physics.
+The validated placement is then re-entered through the same path as an
+unperturbed episode: a fresh env reset (reset_fn) followed by
+env.set_init_state(placed). Restoring the saved MuJoCo state without the reset
+left state behind from the validation settles (in a LIBERO run the robot then
+started 1-7 mm, up to 13 mm, away from its ID start; MuJoCo's saved state omits
+e.g. solver warm-starts). With the fresh reset the difference was 0.0 mm.
 
 numpy only; Python 3.8 (LIBERO client).
 """
@@ -75,8 +79,11 @@ def _settle(env, dummy_action, renv, joints):
     return _poses(renv, joints)
 
 
-def perturb_layout(env, magnitude_m, rng, dummy_action):
-    """Returns (obs, record). obs is None when the episode must be skipped."""
+def perturb_layout(env, magnitude_m, rng, dummy_action, reset_fn=None):
+    """Returns (obs, record). obs is None when the episode must be skipped.
+    reset_fn: a fresh env reset (eval_libero._safe_reset); used to re-enter the validated
+    placement exactly like an unperturbed episode. Without it the placement is restored
+    from the saved state only (small robot-start offset; tests/fakes only)."""
     renv = env.env
     target = movable_target(renv)
     if target is None:
@@ -111,6 +118,8 @@ def perturb_layout(env, magnitude_m, rng, dummy_action):
                           most_moved=worst, max_z_dev_mm=round(1000 * dz[worst_z], 2), z_worst=worst_z,
                           tilt_deg=round(tilt, 2), solved=solved, ok=ok))
         if ok:
+            if reset_fn is not None:
+                reset_fn()
             obs = env.set_init_state(placed)
             return obs, dict(kind="layout", applicable=True, valid=True, target=target, requested_m=magnitude_m,
                              offset_m=(q[:2] - q0[:2]).round(5).tolist(), direction_rad=tries[-1]["direction_rad"],
