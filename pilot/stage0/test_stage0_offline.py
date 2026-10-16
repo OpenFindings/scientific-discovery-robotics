@@ -8,6 +8,7 @@ recovers known effects and applies the exit criteria.
   python -m pytest -q test_stage0_offline.py   (or: python test_stage0_offline.py)
 """
 import json
+import math
 import pathlib
 import sys
 import tempfile
@@ -33,6 +34,7 @@ sys.modules["tyro"].cli = lambda f: None
 
 import analyze_stage0 as an  # noqa: E402
 import eval_libero as ev  # noqa: E402
+import layout_perturb as lp  # noqa: E402
 import relative_state as rs  # noqa: E402
 
 
@@ -415,6 +417,108 @@ def test_anchor_check():
         assert not unpaired["checks"]["pairing"]
         unmatched = _run_anchor_check(d, root, _eval_rows(rng, centers, extra_task="stack the blocks"))
         assert not unmatched["checks"]["all_tasks_matched"] and unmatched["unmatched_tasks"] == ["stack the blocks"]
+
+
+# --- K-layout ---------------------------------------------------------------------------------
+class LayoutFakeEnv(FakeEnv):
+    """FakeEnv plus movable objects with toy physics: overlapping discs (r = 4 cm) push apart,
+    objects past the table edge fall, and the goal is 'target within 2 cm of goal_xy'."""
+    R, TABLE = 0.04, (-0.25, 0.25, -0.35, 0.35)
+
+    def __init__(self, objects, interest, goal_xy=None, **kw):
+        super().__init__(**kw)
+        self.poses = {n: np.r_[xy, 0.90, 1.0, 0, 0, 0] for n, xy in objects.items()}
+        objs = {n: types.SimpleNamespace(joints=[f"{n}_joint0"]) for n in objects}
+        data = self.sim.data
+        data.get_joint_qpos = lambda j: self.poses[j[:-len("_joint0")]].copy()
+        data.set_joint_qpos = lambda j, q: self.poses.__setitem__(j[:-len("_joint0")], np.array(q, float))
+        self.env.objects_dict, self.env.obj_of_interest = objs, interest
+        self.goal_xy = goal_xy
+
+    def get_sim_state(self):
+        return dict(t=self.t, poses={n: p.copy() for n, p in self.poses.items()})
+
+    def set_init_state(self, s):
+        if s is not None:
+            self.t, self.poses = s["t"], {n: p.copy() for n, p in s["poses"].items()}
+        return self._obs()
+
+    def check_success(self):
+        tgt = self.env.obj_of_interest[0]
+        return self.goal_xy is not None and np.linalg.norm(self.poses[tgt][:2] - self.goal_xy) < 0.02
+
+    def step(self, a):
+        names = list(self.poses)
+        for i, n in enumerate(names):
+            for m in names[i + 1:]:
+                d = self.poses[m][:2] - self.poses[n][:2]
+                dist = np.linalg.norm(d)
+                if dist < 2 * self.R:
+                    push = (2 * self.R - dist) / 2 * d / max(dist, 1e-9)
+                    self.poses[n][:2] -= push
+                    self.poses[m][:2] += push
+            x, y = self.poses[n][:2]
+            x0, x1, y0, y1 = self.TABLE
+            if not (x0 <= x <= x1 and y0 <= y <= y1):
+                self.poses[n][2] -= 0.02
+        return super().step(a)
+
+
+def test_layout_moves_target_exactly_and_avoids_overlaps():
+    retried = 0
+    for k in range(20):
+        env = LayoutFakeEnv({"bowl": [0.0, 0.0], "ramekin": [0.09, 0.0], "cookies": [-0.06, 0.07]},
+                            interest=["bowl", "plate"])
+        q0 = env.poses["bowl"].copy(), env.poses["ramekin"].copy()
+        obs, rec = lp.perturb_layout(env, 0.06, ev._rng("s", 0, k, "layout:0.06", "dir"), ev.LIBERO_DUMMY_ACTION)
+        assert obs is not None and rec["valid"] and rec["target"] == "bowl"
+        # restored to the validated placement (settle undone), moved exactly 6 cm
+        assert np.isclose(np.linalg.norm(env.poses["bowl"][:2] - q0[0][:2]), 0.06)
+        assert np.allclose(env.poses["ramekin"], q0[1])
+        for other in ("ramekin", "cookies"):
+            # toy physics splits an overlap evenly, so a <= TOL_XY settle push allows <= 2*TOL_XY overlap
+            assert np.linalg.norm(env.poses["bowl"][:2] - env.poses[other][:2]) >= 2 * env.R - 2 * lp.TOL_XY_M - 1e-9
+        assert all(not t["ok"] for t in rec["tries"][:-1]) and rec["tries"][-1]["ok"]
+        retried += rec["n_tries"] > 1
+    assert retried > 0  # some first directions hit a neighbour and were re-drawn
+
+
+def test_layout_rejects_overlap_falls_and_presolved():
+    # target boxed in: every 6 cm move overlaps a neighbour or leaves the table
+    ring = {f"o{i}": [0.20 + 0.06 * math.cos(i * math.pi / 4), 0.30 + 0.06 * math.sin(i * math.pi / 4)]
+            for i in range(8)}
+    env = LayoutFakeEnv(dict(bowl=[0.20, 0.30], **ring), interest=["bowl"])
+    obs, rec = lp.perturb_layout(env, 0.06, ev._rng("s", 1, 0, "layout:0.06", "dir"), ev.LIBERO_DUMMY_ACTION)
+    assert obs is None and not rec["valid"] and rec["n_tries"] == lp.MAX_TRIES
+    assert np.allclose(env.poses["bowl"][:2], [0.20, 0.30])  # base state restored
+    # every direction lands on the goal -> rejected as pre-solved
+    env = LayoutFakeEnv({"bowl": [0.0, 0.0]}, interest=["bowl"], goal_xy=np.array([0.0, 0.0]))
+    _, rec = lp.perturb_layout(env, 0.01, ev._rng("s", 2, 0, "layout:0.01", "dir"), ev.LIBERO_DUMMY_ACTION)
+    assert not rec["valid"] and all(t["solved"] for t in rec["tries"])
+
+
+def test_layout_paired_and_skips_fixture_only_tasks():
+    a = LayoutFakeEnv({"bowl": [0.0, 0.0], "plate": [0.1, 0.1]}, interest=["bowl"])
+    b = LayoutFakeEnv({"bowl": [0.0, 0.0], "plate": [0.1, 0.1]}, interest=["bowl"])
+    _, ra = lp.perturb_layout(a, 0.03, ev._rng("libero_goal", 4, 2, "layout:0.03", "dir"), ev.LIBERO_DUMMY_ACTION)
+    _, rb = lp.perturb_layout(b, 0.03, ev._rng("libero_goal", 4, 2, "layout:0.03", "dir"), ev.LIBERO_DUMMY_ACTION)
+    assert ra["offset_m"] == rb["offset_m"] and ra["target"] == "bowl"
+    # "turn on the stove": only a fixture of interest -> skipped, never run
+    env, cl = LayoutFakeEnv({"bowl": [0.0, 0.0]}, interest=["flat_stove_1"]), FakeClient()
+    rec, _ = ev.run_episode(env, cl, "turn on the stove", None, "layout:0.03", ("libero_goal", 3, 0), ARGS, 50)
+    assert rec["skipped"] and rec["success"] is None and not cl.calls
+    assert rec["perturbation"]["applicable"] is False
+
+
+def test_analysis_drops_skipped_layout_rows():
+    rows = synth({**GOOD, ("N", "layout:0.06"): .6, ("R", "layout:0.06"): .3})
+    for arm in ("N", "R"):
+        rows.append(dict(arm=arm, seed="41", suite="libero_goal", task=3, init=0, condition="layout:0.06",
+                         skipped=True, success=None, prompt=None, states=[]))
+    rep = run_analysis(rows)
+    assert rep["skipped_layout_instances"] == {"N|layout:0.06": 1, "R|layout:0.06": 1}
+    assert "layout:0.06" in rep["checks"]["3_config_shift_bites"]["R_minus_N"]
+    assert rep["checks"]["3_config_shift_bites"]["R_minus_N"]["layout:0.06"]["diff_pp"] < -3
 
 
 if __name__ == "__main__":

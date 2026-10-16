@@ -21,7 +21,7 @@ The pilot runs on one backbone with fixed data, cameras and recipe:
 
 ## 1. Why LIBERO-Plus, and how to live with LIBERO's known problems
 
-**Why LIBERO-Plus.** It perturbs **robot initial joint states** (`qpos`, generator magnitude 0.1–0.5) and **target-object pose** (sub-dimension O2) inside the same LIBERO scenes that Blackout vs Freeze used for camera faults. So both shift types can be applied to *the same* task instances. That pairing is what makes the comparison clean.
+**Why LIBERO-Plus.** It perturbs **robot initial joint states** (`qpos`, generator magnitude 0.1–0.5) and **object layout** (sub-dimension O2; reimplemented here as a paired, single-object shift, §2.2) inside the same LIBERO scenes that Blackout vs Freeze used for camera faults. So both shift types can be applied to *the same* task instances. That pairing is what makes the comparison clean.
 
 It is also where the problem is most visible. In LIBERO-Plus Table 1, π0 (which uses state) drops to **6.0%** under robot-initial-state perturbation. OpenVLA-OFT drops to 37.2%.
 
@@ -65,7 +65,7 @@ All conditions run on the same 400 instances: 4 suites × 10 tasks × LIBERO ini
 |---|---|---|---|
 | **ID** | none | Unperturbed. | Baseline and convergence check. |
 | **K-robot** | configuration | LIBERO-Plus robot-init generator, magnitudes 0.1, 0.2, 0.3. | Primary (pooled into K). |
-| **K-layout** | configuration | LIBERO-Plus O2, target-object pose, two levels. No distractor objects (O1), which would add a visual/semantic shift. | Primary (pooled into K). |
+| **K-layout** | configuration | The task's first movable object of interest moved exactly 3 cm or 6 cm horizontally, in a random direction, on the unchanged LIBERO init state (`layout_perturb.py`). These equal the maximum shifts of LIBERO-Plus layout levels 1 and 2. LIBERO-Plus's own layout files move every object region and regenerate init states, so they cannot be paired; ours can. Placements that overlap, fall, tilt or pre-solve the task are re-drawn deterministically. Two LIBERO-Goal tasks with only fixtures of interest are skipped. No distractor objects (O1), which would add a visual/semantic shift. | Primary (pooled into K). |
 | **F-scene** | camera fault | Agent-view camera blacked out from the first policy step. The wrist camera and state are untouched. | Primary F. Blackout vs Freeze: π0.5 28.9% with state vs 9.1% without, so it is off the floor. |
 | **F-wrist** | camera fault | Wrist camera blacked out after gripper closure (finger width < 0.020 m for 3 steps, then a uniform 0–10 step delay; Blackout vs Freeze App. A). | Secondary. It tests *closed-loop* use of state mid-task; episode-start wrist faults are at the floor (π0.5 13.1 vs 1.8). |
 | LP-official | mixed | Released LIBERO-Plus robot / layout / camera subsets. | Secondary, for comparability only. |

@@ -11,6 +11,11 @@ Conditions (comma-separated --conditions):
   wrist_blackout_after_close wrist image all zeros from closure + U{0..10} steps
                              (closure: finger width < 0.020 m for 3 consecutive steps;
                              Blackout vs Freeze App. A.2)
+  layout:<m>                 the task's first movable object of interest moved m metres
+                             horizontally in a random direction, validated against
+                             overlaps, falls, tilts and pre-solved goals (layout_perturb.py);
+                             episodes with no movable target or no valid placement are
+                             logged with skipped=True and not run
   robot_init:<m>             arm joints offset by m * u at the start, u a uniformly random
                              unit vector in 7-D joint space (radians). This reproduces
                              LIBERO-Plus's robot-init perturbation, whose 500 released
@@ -44,6 +49,7 @@ from libero.libero import benchmark, get_libero_path
 from libero.libero.envs import OffScreenRenderEnv
 from openpi_client import image_tools
 from openpi_client import websocket_client_policy as _websocket_client_policy
+from layout_perturb import perturb_layout
 from relative_state import EpisodeRelativeState
 
 LIBERO_DUMMY_ACTION = [0.0] * 6 + [-1.0]
@@ -139,6 +145,13 @@ def run_episode(env, client, task_description, init_state, cond, inst, args, max
     rec = dict(perturbation=None, fault_onset=None, closure_step=None)
     if cond.startswith("robot_init:"):
         rec["perturbation"] = perturb_robot_init(env, float(cond.split(":")[1]), _rng(*inst, cond, "dir"))
+    if cond.startswith("layout:"):
+        obs, rec["perturbation"] = perturb_layout(env, float(cond.split(":")[1]), _rng(*inst, cond, "dir"),
+                                                  LIBERO_DUMMY_ACTION)
+        if obs is None:  # not applicable to this task, or no valid placement: not an episode
+            rec.update(skipped=True, success=None, steps=0, prompt=None, start_state=None, states=[],
+                       state_mode=args.state_mode)
+            return rec, []
     delay = int(_rng(*inst, cond, "delay").integers(0, MAX_DELAY + 1))
     if cond == "scene_blackout":
         rec["fault_onset"] = 0

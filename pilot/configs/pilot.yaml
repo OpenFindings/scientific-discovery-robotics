@@ -50,8 +50,10 @@ instances:                # paired across every arm, seed and condition
 
 conditions:
   ID:        {kind: clean}
-  K_robot:   {kind: config, generator: libero_plus.robot_init, magnitudes: [0.1, 0.2, 0.3]}
-  K_layout:  {kind: config, generator: libero_plus.layout_O2_target_pose, levels: [low, high]}
+  # eval_libero.py condition names: robot_init:<rad L2 over 7 joints>, layout:<metres>
+  K_robot:   {kind: config, condition: "robot_init:{m}", magnitudes: [0.1, 0.2, 0.3]}   # LIBERO-Plus parameterization
+  K_layout:  {kind: config, condition: "layout:{m}", magnitudes: [0.03, 0.06]}  # = LIBERO-Plus level-1/2 max shift;
+             # first movable object of interest moved on the LIBERO init state (paired); layout_perturb.py
   F_scene:   {kind: visual, fault: blackout, camera: agentview, onset: episode_start}   # primary
   F_wrist:   {kind: visual, fault: blackout, camera: eye_in_hand, onset: after_gripper_closure,
               closure_rule: "finger width < 0.020 m for 3 steps, then U{0..10} step delay"}  # secondary

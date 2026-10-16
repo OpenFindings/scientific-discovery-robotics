@@ -18,10 +18,11 @@ Written against openpi @ `215abfb` (2026-08-24) and LIBERO-plus @ `4976dc3`. **N
 | `check_anchors.py` | numpy + pyarrow | Arm C gate. Compares each unperturbed eval episode's logged `start_state` with the frame-0 states of that task's training demos. Reports the **systematic** mean offset (mm, degrees, and C state-token bins), **coverage** (share of eval starts inside the training-anchor cloud), and **pairing** (the same instance starts identically across arms and seeds). Reads anchors from a local dataset or straight from Hugging Face via HTTP range requests, so it runs in Stage 0 before the 30 GB conversion. |
 | `run_openpi.py` | openpi env | Runs openpi's `train.py` / `compute_norm_stats.py` with those configs registered. `describe` prints the settings that must match the design. |
 | `serve.py` | openpi env | Websocket policy server. On request, it returns the **decoded prompt** the model actually saw, so a train/serve flag mismatch is logged. `--norm-stats-from` supplies LIBERO stats for `pi05_base`. |
-| `eval_libero.py` | LIBERO client venv (Py 3.8) | Runs paired instances (suite × task × init state) under each condition and writes one JSON line per episode: success, steps, prompt, per-query state, perturbation and fault timing. Supports `id`, `scene_blackout`, `wrist_blackout_after_close` and `robot_init:<m>`. `--state-mode relative` (arm C) sends the state relative to the first policy query. |
+| `eval_libero.py` | LIBERO client venv (Py 3.8) | Runs paired instances (suite × task × init state) under each condition and writes one JSON line per episode: success, steps, prompt, per-query state, perturbation and fault timing. Supports `id`, `scene_blackout`, `wrist_blackout_after_close`, `robot_init:<m>` and `layout:<m>` (Stage 1). `--state-mode relative` (arm C) sends the state relative to the first policy query. |
+| `layout_perturb.py` | LIBERO client venv (Py 3.8) | Stage 1 K-layout: moves the task's first movable object of interest exactly `m` metres in a random direction on the LIBERO init state. It checks the placement over a 10-step settle (no object pushed more than 10 mm, no drop over 30 mm, no tilt over 15°, task not already solved), retries up to 8 deterministic directions, and restores the validated state exactly. Instances with no movable target or no valid placement are logged as `skipped`. |
 | `analyze_stage0.py` | any Python with numpy | Reports success tables and checks 1, 2, 3 and 5, plus a prompt-flag check. Gives the seed SD, the Stage 1 seed recommendation, and the share of R's state tokens that are saturated or out of range. |
 | `stage0.sh` | shell | Orchestrates the steps: `norm_stats train eval anchors reference probe analyze` (plus `convert` for arm C). |
-| `test_stage0_offline.py` | any Python with numpy (+ pyarrow for the converter test) | 16 offline tests. |
+| `test_stage0_offline.py` | any Python with numpy (+ pyarrow for the converter test) | 20 offline tests. |
 
 ## Choices worth knowing
 
@@ -30,6 +31,19 @@ Written against openpi @ `215abfb` (2026-08-24) and LIBERO-plus @ `4976dc3`. **N
 - **Faults** follow Blackout vs Freeze App. A.2. Blackout zeroes the preprocessed image. The after-closure wrist fault triggers when finger width stays below 0.020 m for 3 policy steps, then waits U{0..10} steps.
 - **The checkpoint evaluated is `…/9999`.** openpi saves the final step as `num_train_steps − 1`, and the saved params are the EMA weights.
 - **Check 5 was relaxed** from "N within 10–90%" to "N and R not both at floor or both at ceiling". Blackout vs Freeze's no-state π0.5 sits at 9.1% under scene blackout, so the original rule would fail by design.
+
+## K-layout notes (Stage 1)
+
+- **Why not LIBERO-Plus's layout files.** Measured over the four suites, its `levelK_sampleN` BDDL files shift *every* object region:
+  - maximum shift 30·K mm, median about 8·K mm;
+  - 6% of regions also get a yaw range;
+  - the instances come with regenerated init states.
+
+  Those instances cannot be paired with the LIBERO init states the other conditions use. This pilot instead moves one object on the unchanged init state, at exactly 3 cm or 6 cm (LIBERO-Plus's level-1 and level-2 maxima), with the direction seeded by instance.
+- **Which object.** The first entry of the BDDL `obj_of_interest` that is movable. In spatial, object and most goal tasks this is the grasped object. In two LIBERO-Long tasks it is a destination plate or the first of two moka pots. The moved object is logged per episode.
+
+  "Open the middle drawer" and "turn on the stove" have only fixtures of interest and are skipped: 20 of 400 instances per magnitude.
+- **Not yet measured in MuJoCo.** The validity thresholds (10 mm, 30 mm, 15°) are set for real contact physics but were only exercised against a toy simulator. Before Stage 1, run `layout:0.03,layout:0.06` with one checkpoint and check two things: the share of instances needing retries or skipped, and that the moved object is visibly displaced in the logged videos (`--video-dir`).
 
 ## Arm C notes
 

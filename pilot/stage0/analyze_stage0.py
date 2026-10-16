@@ -6,7 +6,7 @@ the Stage 0 exit criteria from research/pilot_3x2_liberoplus.md (section 6, and 
   check 1  every trained policy >= 85% in distribution; arm gap reported
   check 2  anchor: R - N under scene blackout on Spatial/Object/Goal >= +10 pp
            (Blackout vs Freeze: +19.8 pp, one seed per arm)
-  check 3  configuration shift bites: R - N under robot_init < -3 pp
+  check 3  configuration shift bites: R - N under robot_init or layout < -3 pp
   check 5  under each shifted condition, N and R are not both < 10% or both > 90%
   prompt   arm N prompts contain no "State:", arm R prompts all do
   seeds    between-seed SD per condition -> seed count for Stage 1
@@ -35,10 +35,16 @@ EXPECT_STATE_IN_PROMPT = {"N": False, "R": True, "C": True, "released": False, "
 
 
 def load(paths):
+    """Episode rows; layout instances that were skipped (no movable target / no valid placement)
+    are not episodes and are dropped here (counted in the report)."""
     rows = []
     for p in paths:
         rows += [json.loads(l) for l in pathlib.Path(p).read_text().splitlines() if l.strip()]
-    return rows
+    skipped = defaultdict(int)
+    for r in rows:
+        if r.get("skipped"):
+            skipped[(r["arm"], r["condition"])] += 1
+    return [r for r in rows if not r.get("skipped")], skipped
 
 
 def rate(rs):
@@ -153,11 +159,12 @@ def main():
                     help="ARM=norm_stats.json (repeatable); a bare path means R")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
-    rows = load(a.jsonl)
+    rows, skipped = load(a.jsonl)
     arms = sorted({r["arm"] for r in rows})
     conds = sorted({r["condition"] for r in rows})
     rep = dict(n_episodes=len(rows), arms=arms, conditions=conds,
-               errors=sum(1 for r in rows if r.get("error")))
+               errors=sum(1 for r in rows if r.get("error")),
+               skipped_layout_instances={f"{a_}|{c}": n for (a_, c), n in sorted(skipped.items())})
 
     rep["success"] = {arm: {c: {s: round(100 * v, 1) for s, v in seed_means(rows, arm, c).items()} for c in conds}
                       for arm in arms}
@@ -185,7 +192,7 @@ def main():
         anchor = diff_ci(rows, "R", "N", "scene_blackout", suites=SOG)
         checks["2_anchor"] = dict(pass_=bool(anchor and anchor["diff_pp"] >= 10), R_minus_N=anchor,
                                   reference="Blackout vs Freeze Table 5: +19.8 pp (n=450, 1 seed/arm)")
-        robot = [c for c in conds if c.startswith("robot_init")]
+        robot = [c for c in conds if c.startswith(("robot_init", "layout"))]
         bites = {c: diff_ci(rows, "R", "N", c) for c in robot}
         checks["3_config_shift_bites"] = dict(pass_=any(v and v["diff_pp"] < -3 for v in bites.values()),
                                               R_minus_N=bites)
