@@ -15,19 +15,28 @@ training:
   updates: 10000          # Blackout-vs-Freeze recipe, so arm R vs N replicates their contrast
   batch_size: 32
   lr: 5.0e-5
-  warmup: 1000
+  warmup: 10000           # linear; eval at end of warmup (Blackout-vs-Freeze sim recipe, Table 3)
+  adam_betas: [0.9, 0.95]
+  weight_decay: 1.0e-10
+  grad_clip: 1.0
+  precision: bf16
   ema_decay: 0.999
-  seeds: [41, 42, 43, 44] # same 4 seeds in every arm; extend to 6 if stage-0 seed SD > 6 pp
+  seeds: [41, 42, 43, 44, 45]  # same seeds in every arm; 4 if stage-0 seed SD <= 4 pp, 6-7 if > 6 pp
   blackout_augmentation: false        # no fault exposure in training for any arm
 
 arms:
-  N:  # no state
-    state: none           # state tokens omitted from the prompt (not zero-filled)
+  # openpi: pi0.5 reads state ONLY as prompt text, gated by Pi0Config.discrete_state_input,
+  # which the transform factory (not the model) reads. Set it identically for train and serve.
+  N:  # no state = stock openpi pi05_libero (released checkpoint is this arm)
+    state: none
+    discrete_state_input: false
   R:  # raw state, as in the openpi LIBERO recipe
     state: absolute       # [eef_pos(3), eef_axis_angle(3), gripper_qpos(2)], base frame
-    fusion: naive         # discretized state tokens in the prefix
+    discrete_state_input: true   # "State: b1..b8;" 256 bins after quantile norm (no clipping)
+    fusion: naive
   C:  # corrected state
     state: episode_relative   # pos_t - pos_0, axis_angle(R_0^T R_t), gripper_qpos absolute
+    discrete_state_input: true
     fusion: naive
     norm_stats: recomputed    # quantile normalization refit on the relative vectors
   # Pre-planned extension (stage 2, only if budget allows):
