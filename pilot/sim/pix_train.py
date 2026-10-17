@@ -10,17 +10,14 @@ import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
 sys.path.insert(0, "/home/user/scientific-discovery-robotics/pilot/stage0")
 from relative_state import to_relative
 
-SEED = int(os.environ.get("SEED", "0")); torch.manual_seed(SEED); np.random.seed(SEED)
-torch.set_num_threads(int(os.environ.get("THREADS", "2")))
-oracle_dir, pix_dir, out_dir, arm = sys.argv[1:5]
-STEPS = int(sys.argv[5]) if len(sys.argv) > 5 else 20000
+SEED = int(os.environ.get("SEED", "0"))
 H, BATCH, RES = 10, 64, 64
 
 
 def norm_task(s): return re.sub(r"\s+", " ", s.strip().lower()).rstrip(".")
 
 
-def pack():
+def pack(oracle_dir, pix_dir):
     """No-op filter (as oracle/ego training), chunk targets, absolute + relative state, image cache."""
     pk = f"{pix_dir}/pack"; os.makedirs(pk, exist_ok=True)
     if os.path.exists(f"{pk}/meta.npz"):
@@ -91,7 +88,10 @@ def random_shift(x, pad=4):  # DrQ-style augmentation
 
 
 if __name__ == "__main__":
-    pk = pack(); meta = np.load(f"{pk}/meta.npz"); img = np.load(f"{pk}/img.npy", mmap_mode="r")
+    torch.manual_seed(SEED); np.random.seed(SEED); torch.set_num_threads(int(os.environ.get("THREADS", "2")))
+    oracle_dir, pix_dir, out_dir, arm = sys.argv[1:5]
+    STEPS = int(sys.argv[5]) if len(sys.argv) > 5 else 20000
+    pk = pack(oracle_dir, pix_dir); meta = np.load(f"{pk}/meta.npz"); img = np.load(f"{pk}/img.npy", mmap_mode="r")
     tasks = [str(t) for t in meta["tasks"]]; Y, T = meta["Y"], meta["T"]
     X = {"N": np.zeros((len(Y), 0)), "R": meta["S"], "C": meta["Rl"]}[arm].astype(np.float32)
     xmu, xsd = X.mean(0), X.std(0) + 1e-6; ymu, ysd = Y.mean(0), Y.std(0) + 1e-6
