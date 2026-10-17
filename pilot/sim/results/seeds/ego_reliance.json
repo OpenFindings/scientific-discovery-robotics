@@ -1,0 +1,35 @@
+{
+ "ego_E.pt": {
+  "object": 2.043
+ },
+ "ego_EA.pt": {
+  "object": 1.479,
+  "state": 1.236
+ },
+ "ego_EA_s1.pt": {
+  "object": 1.422,
+  "state": 1.363
+ },
+ "ego_EA_s2.pt": {
+  "object": 1.492,
+  "state": 1.283
+ },
+ "ego_ERl.pt": {
+  "object": 1.57,
+  "state": 1.455
+ },
+ "ego_ERl_s1.pt": {
+  "object": 1.644,
+  "state": 1.385
+ },
+ "ego_ERl_s2.pt": {
+  "object": 1.51,
+  "state": 1.433
+ },
+ "ego_E_s1.pt": {
+  "object": 2.311
+ },
+ "ego_E_s2.pt": {
+  "object": 2.705
+ }
+}

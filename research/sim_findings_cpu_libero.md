@@ -1,5 +1,11 @@
 # What a CPU LIBERO study says about the pilot
 
+> **Update 2026-10-17.** Superseded in part by `research/paper_draft.md`. That draft adds 3 seeds for the blind and ego policies and real-image (pixel CNN) policies. Two results here **changed with pixels**:
+> - under the robot-start shift, raw state is neutral (R−N +4, CI includes 0), not harmful;
+> - relative state helps (C−R +8).
+>
+> The ego-oracle harm replicates over 3 seeds. It reflects the no-state arm being blind to the arm's configuration (paper §4.3).
+
 *2026-10-16. All runs in real LIBERO on CPU (MuJoCo 3.2.3, robosuite 1.4.1, no GPU), with the pilot's own perturbation code. Scripts and per-episode results: `pilot/sim/`. Context: `research/pilot_3x2_liberoplus.md`, `evidence_map/README.md`.*
 
 π0.5 cannot be trained here, since it needs a GPU with more than 70 GB. What *can* run is the simulator, the pilot's perturbations, and small policies whose inputs are fully controlled. Four experiments used them:

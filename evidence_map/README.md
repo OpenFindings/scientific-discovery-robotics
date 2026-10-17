@@ -227,6 +227,8 @@ Outputs are in `results/single_variable_test.json`, `results/planner_output.json
 
 That splits "configuration shift" into two sub-types with opposite expected signs. Published harm under object-position shifts would then reflect imperfect visual grounding (vision suppression) rather than state per se. A blind MLP with absolute state solves 71.5% of in-distribution LIBERO, which supports treating in-distribution results as uninformative.
 
+**Update (3 seeds, real images; `research/paper_draft.md`).** With 64×64 camera images, raw state no longer hurts under the robot-start shift (R−N +4 [−1, +9]), and relative state helps (C−R +8 [+2, +14]). The ego-oracle harm comes from its no-state arm being blind to the arm's configuration. When the scene camera shows the arm, the no-state policy degrades just as much.
+
 ## Caveats
 
 - The settings were coded by one reader (Claude), from paper tables. No second coder checked them.

@@ -100,8 +100,15 @@ if __name__ == "__main__":
     opt = torch.optim.AdamW(net.parameters(), 3e-4, weight_decay=1e-4)
     sch = torch.optim.lr_scheduler.OneCycleLR(opt, 3e-4, total_steps=STEPS, pct_start=0.05)
     print(arm, "seed", SEED, "frames", len(Y), "tasks", len(tasks), "params", sum(p.numel() for p in net.parameters()), flush=True)
+    suf = "" if SEED == 0 else f"_s{SEED}"
+    ck = f"{out_dir}/ckpt_{arm}{suf}.pt"; start = 0
+    if os.path.exists(ck):  # resume after a container restart
+        c = torch.load(ck, weights_only=False)
+        net.load_state_dict(c["net"]); opt.load_state_dict(c["opt"]); sch.load_state_dict(c["sch"])
+        torch.set_rng_state(c["torch_rng"]); np.random.set_state(c["np_rng"]); start = c["step"]
+        print("resumed at", start, flush=True)
     t0 = time.time(); run = 0.0
-    for step in range(STEPS):
+    for step in range(start, STEPS):
         i = np.sort(np.random.randint(0, len(Y), BATCH))  # sorted: friendlier memmap reads
         im = img[i]
         av, wr = random_shift(to_float(im[:, 0])), random_shift(to_float(im[:, 1]))
@@ -109,9 +116,12 @@ if __name__ == "__main__":
         loss = ((net(av, wr, F.one_hot(t[ii], len(tasks)).float(), x[ii]) - y[ii]) ** 2).mean()
         opt.zero_grad(); loss.backward(); opt.step(); sch.step()
         run = 0.98 * run + 0.02 * loss.item() if step else loss.item()
+        if step % 2000 == 1999:
+            torch.save(dict(net=net.state_dict(), opt=opt.state_dict(), sch=sch.state_dict(), torch_rng=torch.get_rng_state(),
+                            np_rng=np.random.get_state(), step=step + 1), ck + ".tmp"); os.replace(ck + ".tmp", ck)
         if step % 500 == 0 or step == STEPS - 1:
             print(arm, step, round(run, 4), round(time.time() - t0), "s", flush=True)
-    suf = "" if SEED == 0 else f"_s{SEED}"
     torch.save(dict(state=net.state_dict(), xmu=xmu, xsd=xsd, ymu=ymu, ysd=ysd, tasks=tasks, H=H, state_dim=X.shape[1],
                     arm=arm, steps=STEPS), f"{out_dir}/pix_{arm}{suf}.pt")
+    if os.path.exists(ck): os.remove(ck)
     print("saved", flush=True)
