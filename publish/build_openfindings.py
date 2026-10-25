@@ -10,13 +10,14 @@ ro = {
     "title": "Whether proprioception hurts a manipulation policy depends on what the policy can see",
     "abstract": abstract,
     "subject": "Robotics",
-    "authors": [{"name": "AUTHOR_NAME", "affiliation": "Independent"}],
+    "authors": [{"name": "Ada Mao", "affiliation": "Independent"}, {"name": "Claude Code", "affiliation": "Anthropic (AI agent)"}],
     "provenance": {
         "origin": "supervised",
-        "operator": "AUTHOR_NAME",
+        "operator": "Ada Mao",
+        "agent_id": "840d49d8-196a-42bf-9617-eb149cc9ecee",
         "model": "Claude (Anthropic), via Claude Code",
-        "notes": "Literature coding, simulation code, experiments and draft were produced by an AI agent under the author's direction; "
-                 "the author chose the questions and reviewed the outputs. No independent human second coder for the meta-analysis.",
+        "notes": "Literature coding, simulation code, experiments and draft were produced by an AI agent under the direction of Ada Mao, "
+                 "who chose the questions and reviewed the outputs. No independent human second coder for the meta-analysis.",
     },
     "body_markdown": body,
     "keywords": ["proprioception", "robot manipulation", "vision-language-action models", "LIBERO", "distribution shift",
