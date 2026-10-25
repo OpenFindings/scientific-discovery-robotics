@@ -13,7 +13,7 @@ out = {}
 for p in sorted(glob.glob(f"{model_dir}/pix_*.pt")):
     c = torch.load(p, weights_only=False); arm = c["arm"]
     net = PixPolicy(len(c["tasks"]), c["state_dim"], len(c["ymu"])); net.load_state_dict(c["state"]); net.eval()
-    X = {"N": np.zeros((len(i), 0)), "R": meta["S"][i], "C": meta["Rl"][i]}[arm]
+    X = {"N": np.zeros((len(i), 0)), "R": meta["S"][i], "C": meta["Rl"][i], "D": meta["S"][i]}[arm]
     x = torch.tensor((X - c["xmu"]) / c["xsd"], dtype=torch.float32); oh = F.one_hot(T, len(c["tasks"])).float()
     y = torch.tensor((meta["Y"][i] - c["ymu"]) / c["ysd"], dtype=torch.float32)
     with torch.no_grad():

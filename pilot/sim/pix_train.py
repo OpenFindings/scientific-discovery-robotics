@@ -1,7 +1,7 @@
 """Pixel LIBERO policies: agentview + wrist images (64x64, from the original LIBERO HDF5 demos) + task one-hot
 [+ absolute | episode-relative robot state] -> next 10 actions. Replaces the object-coordinate oracle with real vision.
 
-usage: SEED=s pix_train.py <oracle_dir> <pix_dir> <out_dir> <arm N|R|C> [steps]
+usage: SEED=s pix_train.py <oracle_dir> <pix_dir> <out_dir> <arm N|R|C|D> [steps]
 Frames are aligned by construction: oracle_extract.py and pix_extract.py both walk demos sorted by index, all frames.
 A packed uint8 image cache (memmap, shared by concurrent runs through the page cache) is built once in <pix_dir>/pack.
 """
@@ -93,7 +93,10 @@ if __name__ == "__main__":
     STEPS = int(sys.argv[5]) if len(sys.argv) > 5 else 20000
     pk = pack(oracle_dir, pix_dir); meta = np.load(f"{pk}/meta.npz"); img = np.load(f"{pk}/img.npy", mmap_mode="r")
     tasks = [str(t) for t in meta["tasks"]]; Y, T = meta["Y"], meta["T"]
-    X = {"N": np.zeros((len(Y), 0)), "R": meta["S"], "C": meta["Rl"]}[arm].astype(np.float32)
+    # D: raw state (as R) with state dropout: on DROP_P of training samples the state input is replaced by its
+    # training mean (normalized 0), the same value the reliance probe uses; evaluation always supplies the state
+    X = {"N": np.zeros((len(Y), 0)), "R": meta["S"], "C": meta["Rl"], "D": meta["S"]}[arm].astype(np.float32)
+    DROP_P = float(os.environ.get("DROP_P", "0.3")) if arm == "D" else 0.0
     xmu, xsd = X.mean(0), X.std(0) + 1e-6; ymu, ysd = Y.mean(0), Y.std(0) + 1e-6
     x = torch.tensor((X - xmu) / xsd); y = torch.tensor((Y - ymu) / ysd); t = torch.tensor(T)
     net = PixPolicy(len(tasks), X.shape[1], Y.shape[1])
@@ -113,7 +116,9 @@ if __name__ == "__main__":
         im = img[i]
         av, wr = random_shift(to_float(im[:, 0])), random_shift(to_float(im[:, 1]))
         ii = torch.from_numpy(i)
-        loss = ((net(av, wr, F.one_hot(t[ii], len(tasks)).float(), x[ii]) - y[ii]) ** 2).mean()
+        xs = x[ii]
+        if DROP_P: xs = xs * (torch.rand(len(ii), 1) >= DROP_P).float()
+        loss = ((net(av, wr, F.one_hot(t[ii], len(tasks)).float(), xs) - y[ii]) ** 2).mean()
         opt.zero_grad(); loss.backward(); opt.step(); sch.step()
         run = 0.98 * run + 0.02 * loss.item() if step else loss.item()
         if step % 2000 == 1999:
@@ -122,6 +127,6 @@ if __name__ == "__main__":
         if step % 500 == 0 or step == STEPS - 1:
             print(arm, step, round(run, 4), round(time.time() - t0), "s", flush=True)
     torch.save(dict(state=net.state_dict(), xmu=xmu, xsd=xsd, ymu=ymu, ysd=ysd, tasks=tasks, H=H, state_dim=X.shape[1],
-                    arm=arm, steps=STEPS), f"{out_dir}/pix_{arm}{suf}.pt")
+                    arm=arm, steps=STEPS, drop_p=DROP_P), f"{out_dir}/pix_{arm}{suf}.pt")
     if os.path.exists(ck): os.remove(ck)
     print("saved", flush=True)

@@ -1,0 +1,15 @@
+pixtrain D 0
+pixtrain D 1
+pixtrain D 2
+pixevalD libero_spatial 0 0-4
+pixevalD libero_spatial 0 5-9
+pixevalD libero_object 0 0-4
+pixevalD libero_object 0 5-9
+pixevalD libero_spatial 1 0-4
+pixevalD libero_spatial 1 5-9
+pixevalD libero_object 1 0-4
+pixevalD libero_object 1 5-9
+pixevalD libero_spatial 2 0-4
+pixevalD libero_spatial 2 5-9
+pixevalD libero_object 2 0-4
+pixevalD libero_object 2 5-9

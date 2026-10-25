@@ -77,7 +77,7 @@ with out.open("a") as fh:
                     rel = EpisodeRelativeState(); plan = collections.deque(); done = False; t = 0
                     while t < ev.MAX_STEPS[suite_name]:
                         if not plan:
-                            s = ev._state(obs); st = {"N": None, "R": s, "C": rel(s)}[arm]
+                            s = ev._state(obs); st = {"N": None, "R": s, "C": rel(s), "D": s}[arm]
                             av, wr = cams(cond == "scene_blackout")
                             plan.extend(models[arm].act(av, wr, st if st is not None else [], ntask)[:5])
                         obs, _, done, _ = env.step(np.clip(plan.popleft(), -1, 1).tolist()); t += 1

@@ -12,6 +12,9 @@ case $kind in
   pixeval) suite=$1; seed=$2; tasks=$3; suf=$( [ $seed = 0 ] || echo _s$seed )
     waitfor $SP/pixm/pix_N$suf.pt $SP/pixm/pix_R$suf.pt $SP/pixm/pix_C$suf.pt
     SEED=$seed ../venv323/bin/python pix_eval.py $suite $SP/pixm $SP/pixm/eval/${suite}_s${seed}_$tasks.jsonl id,robot_init:0.1,layout:0.06,scene_blackout 0-4 N,R,C $tasks >> $SP/pixm/eval/${suite}_s${seed}_$tasks.log 2>&1 ;;
+  pixevalD) suite=$1; seed=$2; tasks=$3; suf=$( [ $seed = 0 ] || echo _s$seed )
+    waitfor $SP/pixm/pix_D$suf.pt
+    SEED=$seed ../venv323/bin/python pix_eval.py $suite $SP/pixm $SP/pixm/eval/${suite}_s${seed}_${tasks}_D.jsonl id,robot_init:0.1,layout:0.06,scene_blackout 0-4 D $tasks >> $SP/pixm/eval/${suite}_s${seed}_${tasks}_D.log 2>&1 ;;
   blindeval) suite=$1; seed=$2; conds=$3; out=$4
     SEED=$seed ../venv323/bin/python blind_eval.py $suite $SP/blind $SP/blind/eval_seeds/$out.jsonl $conds 0-4 T,A,Rl > $SP/blind/eval_seeds/$out.log 2>&1 ;;
   egoeval) suite=$1; seed=$2
