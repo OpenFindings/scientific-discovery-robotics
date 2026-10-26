@@ -1,6 +1,6 @@
 # Whether proprioception hurts a manipulation policy depends on what the policy can see
 
-*Draft, 2026-10-17. A literature meta-analysis plus a CPU simulation study in LIBERO, with testable predictions for large vision-language-action (VLA) models. No GPU was used: every simulated policy is a small network trained and evaluated on CPU. The predictions in §6 are written so that a group with GPUs can confirm or refute them. Code, per-episode results and analysis scripts: `pilot/sim/`, `evidence_map/`.*
+*Version 2, 2026-10-26. Adds a state-dropout arm (D) to the pixel experiment (§4.6); version 1 was posted 2026-10-25. A literature meta-analysis plus a CPU simulation study in LIBERO, with testable predictions for large vision-language-action (VLA) models. No GPU was used: every simulated policy is a small network trained and evaluated on CPU. The predictions in §6 are written so that a group with GPUs can confirm or refute them. Code, per-episode results and analysis scripts: `pilot/sim/`, `evidence_map/`.*
 
 ## Abstract
 
@@ -16,7 +16,7 @@ Papers disagree about whether a robot policy should be given its own joint and g
   - state helped in 11 of 14 camera-fault settings;
   - in-distribution effects were small and of mixed sign.
 
-**Simulation.** In LIBERO we trained policies with no state (N), raw absolute state (R) or episode-relative state (C), at four perception levels:
+**Simulation.** In LIBERO we trained policies with no state (N), raw absolute state (R) or episode-relative state (C), at four perception levels. With pixels we also trained raw state with 30% state dropout (D). The perception levels were:
 - no perception at all;
 - perfect object positions in world coordinates;
 - perfect object positions relative to the gripper;
@@ -24,7 +24,7 @@ Papers disagree about whether a robot policy should be given its own joint and g
 
 They were evaluated on paired instances, 3 seeds each.
 
-**Four findings.**
+**Five findings.**
 1. **In distribution, LIBERO hardly tests perception.** A policy that never sees an image solves 74% of in-distribution LIBERO instances from raw state and a task id.
 2. **The "configuration shift" of the literature splits in two.** With idealised perception:
    - state hurts when the robot starts from a shifted joint configuration (−21 pp);
@@ -38,8 +38,13 @@ They were evaluated on paired instances, 3 seeds each.
    - −34 pp with world-frame objects;
    - +3 pp with gripper-frame objects;
    - +8 pp with pixels.
+5. **State dropout does not help under shift; the relative frame does.** With pixels, raw state trained with 30% state dropout (D) behaves like raw state:
+   - −0.7 pp vs raw under the robot-start shift;
+   - −3.8 pp under the layout shift.
 
-We turn these into seven predictions for π0.5-class models on LIBERO-Plus. The central claim is that the sign of a state ablation is set by **what else the policy can see about the robot**, not by state alone.
+   It is 9 pp below relative state under the robot-start shift, and 7.6 pp below under the layout shift. The probe shows D has learned to nearly ignore state.
+
+We turn these into eight predictions for π0.5-class models on LIBERO-Plus. The central claim is that the sign of a state ablation is set by **what else the policy can see about the robot**, not by state alone.
 
 ---
 
@@ -126,6 +131,7 @@ The published harms under object shifts come from policies whose visual groundin
 - **N:** none.
 - **R:** raw `[eef_pos, eef_axis_angle, gripper_qpos]` in the world frame.
 - **C:** episode-relative, `pos − pos₀` and `axis_angle(R₀ᵀR)`, gripper absolute.
+- **D** (pixels only): as R, but on 30% of training samples the state input is replaced by its training mean (state dropout, the regularised encoding of the pilot design). At evaluation the state is always given.
 
 **Policy and training.** Every policy gets the task as a one-hot input and predicts a 10-step action chunk, of which 5 steps are executed. Demonstrations are no-op filtered.
 
@@ -181,13 +187,14 @@ Paired differences in pp, with 95% CI and per-seed values:
 | | layout 6 cm | +3.8 [−4.3, +11.6] (+3/+6/+2) | +7.6 [−1.1, +16.5] (+5/+11/+7) | +3.8 [−1.8, +9.4] |
 | | scene blackout | 0 (all arms 0%) | 0 | 0 |
 
-**Pixel success rates** (N / R / C):
+**Pixel success rates** (N / R / C / D):
 
-| Condition | N | R | C |
-|---|---|---|---|
-| ID | 88.3 (89/91/85) | 90.3 (89/91/91) | 94.7 (92/96/96) |
-| robot_init 0.1 | 63.0 (66/65/58) | 67.0 (64/66/71) | 75.3 (73/78/75) |
-| layout 6 cm | 35.2 | 39.0 | 42.8 |
+| Condition | N | R | C | D |
+|---|---|---|---|---|
+| ID | 88.3 (89/91/85) | 90.3 (89/91/91) | 94.7 (92/96/96) | 93.0 (92/93/94) |
+| robot_init 0.1 | 63.0 (66/65/58) | 67.0 (64/66/71) | 75.3 (73/78/75) | 66.3 (65/65/69) |
+| layout 6 cm | 35.2 | 39.0 | 42.8 | 35.2 |
+| scene blackout | 0 | 0 | 0 | 0 |
 
 **Seed spread.** The per-seed SD of a paired effect was 1–8 pp across all experiments. Every effect whose CI excludes zero has the same sign in all three seeds, except two:
 - ego layout R − N (+11/0/+9);
@@ -217,6 +224,7 @@ Drop from in-distribution to robot_init 0.1 (pp):
 | Ego oracle C | 1.39–1.46 | 1.51–1.64 | — |
 | Pixels R | 0.38–0.41 | 0.70–0.81 | 0.84–0.91 |
 | Pixels C | 0.45–0.47 | 0.64–0.84 | 0.81–0.94 |
+| Pixels D | 0.07 | 0.73–0.91 | 0.95–1.08 |
 
 - The idealised policies weight state about as much as their perception.
 - The pixel policies weight state about half as much as either camera.
@@ -242,7 +250,23 @@ C − R under robot_init 0.1, by perception level:
 
 So "does a corrected frame fix state?" has no perception-free answer.
 
-### 4.5 Camera faults: not reproduced
+### 4.5 State dropout (D)
+
+Paired differences for the pixel policies, 3 seeds:
+
+| Shift | D − N | D − R | D − C |
+|---|---|---|---|
+| ID | +4.7 [+0.7, +9.0] (+3/+2/+9) | +2.7 [0.0, +6.0] (+3/+2/+3) | −1.7 [−5.7, +2.3] |
+| robot_init 0.1 | +3.3 [−0.7, +7.3] (−1/0/+11) | −0.7 [−5.0, +3.7] (+1/−1/−2) | **−9.0** [−15.0, −3.3] (−8/−13/−6) |
+| layout 6 cm | 0.0 [−9.7, +8.5] | −3.8 [−8.9, +1.1] (−5/−1/−6) | **−7.6** [−13.0, −1.1] (−6/−7/−10) |
+
+- **Under both shifts, D is indistinguishable from raw state**, and it is worse than relative state in all three seeds.
+- **In distribution, dropout adds a small, consistent gain over raw state** (+2.7 pp; +2 to +3 in every seed).
+- **Reliance probe.** Replacing D's state with its training mean changes its actions by only 0.07 action-SD, about a fifth of R's 0.38–0.41. Dropout taught the policy to treat state as optional, and it then mostly ignored it.
+  - Caveat: the probe's replacement value is exactly the dropout value D saw in training. The probe therefore measures how far D's actions depend on the state when it is present, not how it reacts to an unusual state.
+- **The question dropout was meant to answer remains open.** Does reducing reliance on state give up state's camera-fault benefit (the pilot's trade-off T)? It cannot be answered here, because every pixel arm, D included, scores 0% under scene blackout (§4.6).
+
+### 4.6 Camera faults: not reproduced
 
 With the scene camera blacked out, all pixel policies scored 0%. The oracle analogue also scored 0%. Our small CNNs cannot do these tasks from the wrist camera alone, so this study says nothing about state's camera-fault benefit. That half of the evidence still rests on one paper (Blackout vs Freeze).
 
@@ -252,14 +276,19 @@ With the scene camera blacked out, all pixel policies scored 0%. The oracle anal
    - Under a robot-start shift, state hurts exactly when the no-state policy's perception is invariant to the arm's configuration: blind replay or gripper-frame objects.
    - When the cameras show the arm, which is the standard third-person LIBERO setup, both policies inherit the same sensitivity, and raw state is neutral.
 2. **Object shifts behave differently from robot shifts.** With perception good enough to locate the object, state did not hurt at 6 cm; in the ego oracle it helped. A state *harm* under object shift in a real VLA would therefore indicate **vision suppression**: imperfect visual grounding that state lets the policy skip.
-3. **For the planner's H6 vs H7.** The pixel results favour an encoding effect under robot-start shift: C beats both R and N. But they do not reproduce the premise that raw state hurts under configuration shift. The pooled "configuration shift" cell should be split, and H6/H7 re-scored per sub-type, before any decision.
+3. **Regularising state away is not the same as correcting its frame.**
+   - With pixels, dropout made the policy largely ignore state and left its robustness unchanged (D ≈ R ≈ N under both shifts).
+   - Re-expressing state relative to the episode start kept state in use and improved robustness to the robot-start shift (C − R +8 pp).
+   - So when state does help, it helps through a frame that stays in distribution, not through less reliance.
+4. **For the planner's H6 vs H7.** The pixel results favour an encoding effect under robot-start shift: C beats both R and N. But they do not reproduce the premise that raw state hurts under configuration shift. The pooled "configuration shift" cell should be split, and H6/H7 re-scored per sub-type, before any decision.
 
 ## 6. Testable predictions for large VLAs
 
 **Setup.** One backbone (π0.5 from `pi05_base`), fine-tuned on LIBERO three times with identical data, cameras and recipe:
 - **N:** stock `pi05_libero`, `discrete_state_input=False`;
 - **R:** raw state as discretised prompt tokens;
-- **C:** episode-relative state, renormalised.
+- **C:** episode-relative state, renormalised;
+- **D:** raw state with 30% state-token dropout during training (the pilot's planned extension arm).
 
 The protocol, configs and scripts are in `research/pilot_3x2_liberoplus.md` and `pilot/stage0/`. Instances are paired, and the shifts are those of §3, at LIBERO-Plus magnitudes.
 
@@ -272,6 +301,7 @@ The protocol, configs and scripts are in `research/pilot_3x2_liberoplus.md` and 
 | P5 | **Layout 6 cm:** R − N ≥ 0, and N, R and C are all well above the blind floor of ~4%. | R − N ≤ −10 pp. That would directly measure **vision suppression** by state in π0.5. |
 | P6 | **Reliance:** in the input-ablation probe (§4.3) on π0.5, removing state changes actions less than removing the agent-view image. Policies where state outweighs perception should be the ones that show P2 harm. | State reliance ≥ agent-view reliance while P2 holds; or the reverse pattern. |
 | P7 | **Wrist camera as the only view of the arm:** with the agent view removed or cropped to exclude the arm, the robot-start harm of state reappears (the ego pattern, R − N < 0). | R − N stays ≈ 0 when the arm is invisible to the no-state policy. |
+| P8 | **State dropout:** under the robot-start and layout shifts, D − R ≈ 0 (within ±5 pp) and C − D > 0. In distribution D ≥ R. | D beats C under the robot-start shift, which would mean regularisation rather than the frame is what removes state harm at VLA scale. |
 
 P2, P5 and P7 are the decisive ones. P7 is a controlled version of our explanation, and it can be run with the same checkpoints by changing only the camera setup at fine-tuning.
 
@@ -281,7 +311,8 @@ P2, P5 and P7 are the decisive ones. P7 is a controlled version of our explanati
 
 - **Small policies.** At most 1.7M parameters, trained from scratch on 2 of 4 suites (Spatial, Object), at 64×64. π0.5 has a pretrained 2B vision-language backbone, state as discrete tokens, and different failure modes. The simulation bounds mechanisms; it does not predict π0.5's numbers.
 - **One robot-start magnitude** with pixels (0.1). The ego oracle also covered 0.2 and showed the same sign, with 1 seed.
-- **Camera faults** could not be tested (§4.5).
+- **Camera faults** could not be tested (§4.6). As a result, the trade-off that state dropout was meant to probe (robustness bought by giving up the camera-fault benefit) is untested.
+- **One dropout rate** (30%) was tried, and dropout was applied to the raw-state arm only.
 - **The allocentric oracle** has 1 seed.
 - **Blind seed-0 layout rows** were re-run after a reset fix. The seed-0 ID and robot-start rows predate it but are not affected by it.
 - **Meta-analysis coding** was done by one reader (Claude) without a second human coder. H6 and H7 are post hoc.
@@ -294,7 +325,7 @@ P2, P5 and P7 are the decisive ones. P7 is a controlled version of our explanati
 | What | Where |
 |---|---|
 | Meta-analysis | `evidence_map/scripts/` (records, single-variable test, planner) |
-| Simulation | `pilot/sim/`, launch via `job.sh` / `run_queue2.sh` (CPU only, ~1 day on 4 cores) |
+| Simulation | `pilot/sim/`, launch via `job.sh` / `run_queue2.sh` / `run_queue3.sh` (arm D) (CPU only, ~1 day on 4 cores) |
 | Pixel pipeline | `pix_extract.py` → `pix_align.py` → `pix_train.py` → `pix_eval.py` |
 | Analysis | `analyze_seeds.py`; probes `pix_reliance.py`, `ego_reliance.py` |
 | Per-episode results | `pilot/sim/results/{blind,ego,oracle,pix,seeds}/` |

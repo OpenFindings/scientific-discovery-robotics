@@ -17,6 +17,24 @@
   "agentview": 0.784,
   "wrist": 0.939
  },
+ "pix_D.pt": {
+  "fit_mse": 0.182,
+  "state": 0.074,
+  "agentview": 0.8,
+  "wrist": 0.991
+ },
+ "pix_D_s1.pt": {
+  "fit_mse": 0.183,
+  "state": 0.073,
+  "agentview": 0.733,
+  "wrist": 1.08
+ },
+ "pix_D_s2.pt": {
+  "fit_mse": 0.186,
+  "state": 0.073,
+  "agentview": 0.91,
+  "wrist": 0.954
+ },
  "pix_N.pt": {
   "fit_mse": 0.182,
   "agentview": 0.766,
